@@ -4,8 +4,7 @@ using Service;
 using Service.QueryPlan;
 using Service.QueryExecutor;
 using System.Data;
-
-
+using Service.ConnectioService;
 
 var serviceProvider = new ServiceCollection()
     .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
@@ -18,14 +17,25 @@ var serviceProvider = new ServiceCollection()
         factory => (Func<DbName, IQueryExecutor?>)
             (key => factory.GetServices<IQueryExecutor>().FirstOrDefault(o => o.Name == key))
     )
+    .AddSingleton<IConnectionService, SqliteConnectionService>()
+    .AddSingleton(
+        factory => (Func<DbName, IConnectionService?>)
+            (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
+    )
     .BuildServiceProvider();
 
+DbName dbName = DbName.SQLite;
 
 var fact = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
+var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
 
-using var connection = new SqliteConnection("Data Source=C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db;Mode=ReadWrite");
+IQueryPlanAnalyzer pa = fact!(dbName);
+IConnectionService cs = factConnection!(dbName);
+
+using var connection = cs.Connect(new ConnectionCredentials("C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db"));
+
 string command = "SELECT ar.ArtistId, ar.Name, al.Title FROM artists AS ar JOIN albums AS al ON al.ArtistId = ar.ArtistId";
-IQueryPlanAnalyzer pa = fact!(DbName.SQLite);
+
 DataTable dt = pa.Analyze(connection, command);
 
 print(dt);
