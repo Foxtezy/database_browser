@@ -1,5 +1,5 @@
 ﻿
-namespace PlanAnal
+namespace Service
 {
     public enum DbName
     {

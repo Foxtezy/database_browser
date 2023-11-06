@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace PlanAnal.QueryPlan
+namespace Service.QueryPlan
 {
     public interface IQueryPlanAnalyzer : IDbOperation
     {

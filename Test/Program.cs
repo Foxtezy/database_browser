@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using PlanAnal;
-using PlanAnal.QueryPlan;
-using PlanAnal.QueryExecutor;
+using Service;
+using Service.QueryPlan;
+using Service.QueryExecutor;
 using System.Data;
 
 

@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Data;
 
-namespace PlanAnal.QueryExecutor
+namespace Service.QueryExecutor
 {
     public class SqliteQueryExecutor : IQueryExecutor
     {
