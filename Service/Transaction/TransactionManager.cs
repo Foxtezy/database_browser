@@ -8,5 +8,11 @@ namespace Service.TransactionManager
 {
     public class TransactionManager : ITransactionManager
     {
+
+        private bool InTransactionFlag = false;
+
+        public void InTransaction(bool inTransaction) => InTransactionFlag = inTransaction;
+
+        public bool IsInTransaction() => InTransactionFlag;
     }
 }

@@ -9,5 +9,8 @@ namespace Service.TransactionManager
 
     public interface ITransactionManager
     {
+        bool IsInTransaction();
+
+        void InTransaction(bool inTransaction);
     }
 }

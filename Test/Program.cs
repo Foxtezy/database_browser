@@ -6,6 +6,7 @@ using Service.QueryExecutor;
 using System.Data;
 using Service.ConnectionService;
 using Service.Transaction;
+using Service.TransactionManager;
 
 var serviceProvider = new ServiceCollection()
     .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
@@ -23,6 +24,7 @@ var serviceProvider = new ServiceCollection()
         factory => (Func<DbName, IConnectionService?>)
             (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
     )
+    .AddSingleton<ITransactionManager, TransactionManager>()
     .AddSingleton<ITransactionExecutor, SqliteTransactionExecutor>()
     .AddSingleton(
         factory => (Func<DbName, ITransactionExecutor?>)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Service.TransactionManager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -13,6 +14,10 @@ namespace Service.Transaction
     {
         public DbName Name => DbName.SQLite;
 
+        private readonly ITransactionManager transactionManager;
+
+        public SqliteTransactionExecutor(ITransactionManager transactionManager) => this.transactionManager = transactionManager;
+
         public void BeginTransaction(DbConnection connection)
         {
             if (connection.State != ConnectionState.Open)
@@ -22,6 +27,7 @@ namespace Service.Transaction
             DbCommand command = connection.CreateCommand();
             command.CommandText = "BEGIN TRANSACTION";
             command.ExecuteNonQuery();
+            transactionManager.InTransaction(true);
         }
 
         public void CommitTransaction(DbConnection connection)
@@ -33,6 +39,7 @@ namespace Service.Transaction
             DbCommand command = connection.CreateCommand();
             command.CommandText = "COMMIT TRANSACTION";
             command.ExecuteNonQuery();
+            transactionManager.InTransaction(false);
         }
 
         public void RollbackTransaction(DbConnection connection)
@@ -44,6 +51,7 @@ namespace Service.Transaction
             DbCommand command = connection.CreateCommand();
             command.CommandText = "ROLLBACK TRANSACTION";
             command.ExecuteNonQuery();
+            transactionManager.InTransaction(false);
         }
     }
 }
