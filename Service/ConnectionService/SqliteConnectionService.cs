@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ConnectioService
+namespace Service.ConnectionService
 {
     public class SqliteConnectionService : IConnectionService
     {

@@ -4,7 +4,8 @@ using Service;
 using Service.QueryPlan;
 using Service.QueryExecutor;
 using System.Data;
-using Service.ConnectioService;
+using Service.ConnectionService;
+using Service.Transaction;
 
 var serviceProvider = new ServiceCollection()
     .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
@@ -22,21 +23,30 @@ var serviceProvider = new ServiceCollection()
         factory => (Func<DbName, IConnectionService?>)
             (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
     )
+    .AddSingleton<ITransactionExecutor, SqliteTransactionExecutor>()
+    .AddSingleton(
+        factory => (Func<DbName, ITransactionExecutor?>)
+            (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
+    )
     .BuildServiceProvider();
 
 DbName dbName = DbName.SQLite;
 
-var fact = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
+var factPlan = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
 var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
+var factTransaction = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
 
-IQueryPlanAnalyzer pa = fact!(dbName);
+IQueryPlanAnalyzer pa = factPlan!(dbName);
 IConnectionService cs = factConnection!(dbName);
+ITransactionExecutor te = factTransaction!(dbName);
 
 using var connection = cs.Connect(new ConnectionCredentials("C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db"));
 
 string command = "SELECT ar.ArtistId, ar.Name, al.Title FROM artists AS ar JOIN albums AS al ON al.ArtistId = ar.ArtistId";
 
+te.BeginTransaction(connection);
 DataTable dt = pa.Analyze(connection, command);
+te.CommitTransaction(connection);
 
 print(dt);
 
