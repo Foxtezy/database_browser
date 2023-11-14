@@ -11,7 +11,15 @@ namespace Service.TransactionManager
 
         private bool InTransactionFlag = false;
 
-        public void InTransaction(bool inTransaction) => InTransactionFlag = inTransaction;
+        // You can add EventHandler Notify += handler
+        public event EventHandler? Notify;
+
+        // Generates notify
+        public void InTransaction(bool inTransaction)
+        {
+            InTransactionFlag = inTransaction;
+            Notify?.Invoke(this, EventArgs.Empty);
+        }
 
         public bool IsInTransaction() => InTransactionFlag;
     }

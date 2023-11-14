@@ -14,7 +14,11 @@ namespace Service.ConnectionService
 
         public DbConnection Connect(ConnectionCredentials credentials)
         {
-             return new SqliteConnection($"Data Source={credentials.Path};Mode=ReadWrite");
+            if (string.IsNullOrEmpty(credentials.Path))
+            {
+                throw new ArgumentException("Path must be non empty", nameof(credentials.Path));
+            }
+            return new SqliteConnection($"Data Source={credentials.Path};Mode=ReadWrite");
         }
     }
 }

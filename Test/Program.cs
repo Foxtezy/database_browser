@@ -8,29 +8,8 @@ using Service.ConnectionService;
 using Service.Transaction;
 using Service.TransactionManager;
 
-var serviceProvider = new ServiceCollection()
-    .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
-    .AddSingleton(
-        factory => (Func<DbName, IQueryPlanAnalyzer?>)
-            (key => factory.GetServices<IQueryPlanAnalyzer>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IQueryExecutor, SqliteQueryExecutor>()
-    .AddSingleton(
-        factory => (Func<DbName, IQueryExecutor?>)
-            (key => factory.GetServices<IQueryExecutor>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IConnectionService, SqliteConnectionService>()
-    .AddSingleton(
-        factory => (Func<DbName, IConnectionService?>)
-            (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<ITransactionManager, TransactionManager>()
-    .AddSingleton<ITransactionExecutor, SqliteTransactionExecutor>()
-    .AddSingleton(
-        factory => (Func<DbName, ITransactionExecutor?>)
-            (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
-    )
-    .BuildServiceProvider();
+
+var serviceProvider = buildServiceProvider();
 
 DbName dbName = DbName.SQLite;
 
@@ -42,7 +21,9 @@ IQueryPlanAnalyzer pa = factPlan!(dbName);
 IConnectionService cs = factConnection!(dbName);
 ITransactionExecutor te = factTransaction!(dbName);
 
-using var connection = cs.Connect(new ConnectionCredentials("C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db"));
+ConnectionCredentials connCred = new();
+connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
+using var connection = cs.Connect(connCred);
 
 string command = "SELECT ar.ArtistId, ar.Name, al.Title FROM artists AS ar JOIN albums AS al ON al.ArtistId = ar.ArtistId";
 
@@ -67,5 +48,32 @@ static void print(DataTable dt)
             Console.Write("\t{0}", cell);
         Console.WriteLine();
     }
+}
+
+static ServiceProvider buildServiceProvider()
+{
+    return new ServiceCollection()
+    .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
+    .AddSingleton(
+        factory => (Func<DbName, IQueryPlanAnalyzer?>)
+            (key => factory.GetServices<IQueryPlanAnalyzer>().FirstOrDefault(o => o.Name == key))
+    )
+    .AddSingleton<IQueryExecutor, SqliteQueryExecutor>()
+    .AddSingleton(
+        factory => (Func<DbName, IQueryExecutor?>)
+            (key => factory.GetServices<IQueryExecutor>().FirstOrDefault(o => o.Name == key))
+    )
+    .AddSingleton<IConnectionService, SqliteConnectionService>()
+    .AddSingleton(
+        factory => (Func<DbName, IConnectionService?>)
+            (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
+    )
+    .AddSingleton<ITransactionManager, TransactionManager>()
+    .AddSingleton<ITransactionExecutor, SqliteTransactionExecutor>()
+    .AddSingleton(
+        factory => (Func<DbName, ITransactionExecutor?>)
+            (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
+    )
+    .BuildServiceProvider();
 }
 
