@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,14 +12,22 @@ namespace Service.TransactionManager
 
         private bool InTransactionFlag = false;
 
-        // You can add EventHandler Notify += handler
-        public event EventHandler? Notify;
+        private event EventHandler? Notify;
+
+        public void AddEventHandler(EventHandler handler) => Notify += handler;
 
         // Generates notify
         public void InTransaction(bool inTransaction)
         {
-            InTransactionFlag = inTransaction;
-            Notify?.Invoke(this, EventArgs.Empty);
+            if (InTransactionFlag != inTransaction)
+            {
+                InTransactionFlag = inTransaction;
+                Notify?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                InTransactionFlag = inTransaction;
+            }
         }
 
         public bool IsInTransaction() => InTransactionFlag;

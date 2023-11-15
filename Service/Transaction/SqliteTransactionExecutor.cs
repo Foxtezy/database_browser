@@ -53,5 +53,18 @@ namespace Service.Transaction
             command.ExecuteNonQuery();
             transactionManager.InTransaction(false);
         }
+
+        public bool TransactionStatus(DbConnection connection)
+        {
+            try
+            {
+                DbTransaction transaction = connection.BeginTransaction();
+                transaction.Rollback();
+            } catch (Exception)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

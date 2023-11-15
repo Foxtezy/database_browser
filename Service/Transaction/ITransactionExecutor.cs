@@ -14,5 +14,7 @@ namespace Service.Transaction
         void CommitTransaction(DbConnection connection);
 
         void RollbackTransaction(DbConnection connection);
+
+        bool TransactionStatus(DbConnection connection);
     }
 }

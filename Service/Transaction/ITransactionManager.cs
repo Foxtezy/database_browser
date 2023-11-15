@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Service.TransactionManager
 {
 
-    public interface ITransactionManager
+    public interface ITransactionManager : IObservable
     {
         bool IsInTransaction();
 
