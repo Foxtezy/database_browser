@@ -1,12 +1,22 @@
-﻿using System.Windows.Forms;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Service;
+using Service.ConnectionService;
+using Service.QueryPlan;
+using System;
+using System.Data;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 
 namespace DBrowser
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        private ServiceProvider serviceProvider;
+        public Form1(ServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
             InitializeComponent();
             tabControl1.TabPages.Clear();
             TabPage newPage = new TabPage();
@@ -98,5 +108,33 @@ namespace DBrowser
         {
 
         }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
+            ConnectionCredentials connectionCredentials = new();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                connectionCredentials.Path = openFileDialog.FileName;
+                DbName dbName = DbName.SQLite;
+                var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
+                IConnectionService connectionService = factConnection!(dbName);
+                using var connection = connectionService.Connect(connectionCredentials);
+                //CollectionName
+                //NumberOfRestrictions
+                //NumberOfIdentifierParts
+                DataTable dataTable = connection.GetSchema();
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    foreach (object obj in row.ItemArray)
+                    {
+                        Debug.WriteLine(obj);
+                    }
+                }
+            }
+        }
+
+     
     }
 }
