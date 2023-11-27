@@ -3,6 +3,7 @@ using System.Data;
 using Service.Transaction;
 using Service.QueryParser;
 using Service.TransactionManager;
+using System.IO;
 
 namespace Service.QueryExecutor
 {
@@ -12,13 +13,16 @@ namespace Service.QueryExecutor
 
         private readonly IQueryParser queryParser;
 
-        public SqliteQueryExecutor(Func<DbName, IQueryParser> queryParserFactory)
+        private readonly ICsvExporter csvExporter;
+
+        public SqliteQueryExecutor(Func<DbName, IQueryParser> queryParserFactory, ICsvExporter csvExporter)
         {
             this.queryParser = queryParserFactory(Name);
+            this.csvExporter = csvExporter;
+
         }
 
-        //Поддержать обработку больших запросов
-        public DataTable Execute(DbConnection connection, string query)
+        public StreamReader Execute(DbConnection connection, string query)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -27,10 +31,10 @@ namespace Service.QueryExecutor
             DbCommand command = connection.CreateCommand();
             command.CommandText = query;
             DbDataReader reader = command.ExecuteReader();
-            DataTable dataTable = new();
-            dataTable.Load(reader);
-            queryParser.FindTransactionInQuery(connection, query);
-            return dataTable;
+         
+            csvExporter.DataReaderToCsvFile(reader, "tmp.csv", ":");
+
+            return new StreamReader("tmp.csv"); ;
         }
     }
 }

@@ -18,10 +18,12 @@ var factPlan = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
 var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
 var factTransaction = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
 var transactionManager = serviceProvider.GetService<ITransactionManager>();
+var factExec = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
 
 IQueryPlanAnalyzer pa = factPlan!(dbName);
 IConnectionService cs = factConnection!(dbName);
 ITransactionExecutor te = factTransaction!(dbName);
+IQueryExecutor qe = factExec!(dbName);
 
 transactionManager!.AddEventHandler((sen, arg) => Console.WriteLine($"Transaction: {transactionManager.IsInTransaction()}"));
 
@@ -29,27 +31,17 @@ ConnectionCredentials connCred = new();
 connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
 using var connection = cs.Connect(connCred);
 
-string command = "SELECT ar.ArtistId, ar.Name, al.Title FROM artists AS ar JOIN albums AS al ON al.ArtistId = ar.ArtistId; COMMIT TRANSACTION;";
+string command = "SELECT * FROM artists";
 
-te.BeginTransaction(connection);
-DataTable dt = pa.Analyze(connection, command);
-print(dt);
-//te.CommitTransaction(connection);
+StreamReader sr = qe.Execute(connection, command);
+print(sr);
 
 
-static void print(DataTable dt)
+static void print(StreamReader sr)
 {
-    foreach (DataColumn column in dt.Columns)
+    while (!sr.EndOfStream)
     {
-        Console.Write("\t{0}", column.ColumnName);
-    }
-    Console.WriteLine();
-    foreach (DataRow row in dt.Rows)
-    {
-        var cells = row.ItemArray;
-        foreach (object? cell in cells)
-            Console.Write("\t{0}", cell);
-        Console.WriteLine();
+        Console.WriteLine(sr.ReadLine());
     }
 }
 
@@ -83,6 +75,7 @@ static ServiceProvider buildServiceProvider()
             (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
     )
     .AddSingleton<IQueryLogger, QueryLogger>()
+    .AddSingleton<ICsvExporter, CsvExporter>()
     .BuildServiceProvider();
 }
 
