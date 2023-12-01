@@ -18,22 +18,31 @@ var factPlan = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
 var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
 var factTransaction = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
 var transactionManager = serviceProvider.GetService<ITransactionManager>();
+var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
 
 IQueryPlanAnalyzer pa = factPlan!(dbName);
 IConnectionService cs = factConnection!(dbName);
 ITransactionExecutor te = factTransaction!(dbName);
+IQueryExecutor qe = factQueryExecutor!(dbName);
 
 transactionManager!.AddEventHandler((sen, arg) => Console.WriteLine($"Transaction: {transactionManager.IsInTransaction()}"));
 
 ConnectionCredentials connCred = new();
-connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
+connCred.Path = "C:\\Program Files (x86)\\DB Browser for SQLite\\test.db";
 using var connection = cs.Connect(connCred);
 
-string command = "SELECT ar.ArtistId, ar.Name, al.Title FROM artists AS ar JOIN albums AS al ON al.ArtistId = ar.ArtistId; COMMIT TRANSACTION;";
+string command = "SELECT DISTINCT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk " +
+                                        "FROM sqlite_master AS t, " +
+                                        "pragma_table_info(t.name) AS c " +
+                                        "WHERE t.type = 'table'";
+// SELECT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk
+//FROM sqlite_master AS t,
+//     pragma_table_info(t.name) AS c
+//WHERE t.type = 'table';
+S dt = qe.Execute(connection, command);
+Console.WriteLine(dt.Columns[0].ToString() + dt.Columns[1].ToString());
 
-te.BeginTransaction(connection);
-DataTable dt = pa.Analyze(connection, command);
-print(dt);
+
 //te.CommitTransaction(connection);
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DBrowser.Controllers;
+using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.ConnectionService;
 using Service.QueryPlan;
@@ -13,10 +14,13 @@ namespace DBrowser
 {
     public partial class Form1 : Form
     {
+        private OpenSQLitController openDataBaseController;
         private ServiceProvider serviceProvider;
         public Form1(ServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            openDataBaseController = new OpenSQLitController(serviceProvider);
+
             InitializeComponent();
             tabControl1.TabPages.Clear();
             TabPage newPage = new TabPage();
@@ -113,25 +117,9 @@ namespace DBrowser
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
-            ConnectionCredentials connectionCredentials = new();
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                connectionCredentials.Path = openFileDialog.FileName;
-                DbName dbName = DbName.SQLite;
-                var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
-                IConnectionService connectionService = factConnection!(dbName);
-                using var connection = connectionService.Connect(connectionCredentials);
-                //CollectionName
-                //NumberOfRestrictions
-                //NumberOfIdentifierParts
-                DataTable dataTable = connection.GetSchema();
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    foreach (object obj in row.ItemArray)
-                    {
-                        Debug.WriteLine(obj);
-                    }
-                }
+                openDataBaseController.openDataBase(openFileDialog.FileName);
             }
         }
 
