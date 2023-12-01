@@ -5,6 +5,6 @@ namespace Service.QueryExecutor
 {
     public interface IQueryExecutor : IDbOperation
     {
-        DataTable Execute(DbConnection connection, string query);
+        StreamReader Execute(DbConnection connection, string query);
     }
 }

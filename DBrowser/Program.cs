@@ -54,6 +54,7 @@ namespace DBrowser
                     (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
             )
             .AddSingleton<IQueryLogger, QueryLogger>()
+            .AddSingleton<ICsvExporter, CsvExporter>()
             .BuildServiceProvider();
         }
     }

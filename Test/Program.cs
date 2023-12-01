@@ -18,47 +18,30 @@ var factPlan = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
 var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
 var factTransaction = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
 var transactionManager = serviceProvider.GetService<ITransactionManager>();
-var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
+var factExec = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
 
 IQueryPlanAnalyzer pa = factPlan!(dbName);
 IConnectionService cs = factConnection!(dbName);
 ITransactionExecutor te = factTransaction!(dbName);
-IQueryExecutor qe = factQueryExecutor!(dbName);
+IQueryExecutor qe = factExec!(dbName);
 
 transactionManager!.AddEventHandler((sen, arg) => Console.WriteLine($"Transaction: {transactionManager.IsInTransaction()}"));
 
 ConnectionCredentials connCred = new();
-connCred.Path = "C:\\Program Files (x86)\\DB Browser for SQLite\\test.db";
+connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
 using var connection = cs.Connect(connCred);
 
-string command = "SELECT DISTINCT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk " +
-                                        "FROM sqlite_master AS t, " +
-                                        "pragma_table_info(t.name) AS c " +
-                                        "WHERE t.type = 'table'";
-// SELECT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk
-//FROM sqlite_master AS t,
-//     pragma_table_info(t.name) AS c
-//WHERE t.type = 'table';
-S dt = qe.Execute(connection, command);
-Console.WriteLine(dt.Columns[0].ToString() + dt.Columns[1].ToString());
+string command = "SELECT * FROM artists";
+
+StreamReader sr = qe.Execute(connection, command);
+print(sr);
 
 
-//te.CommitTransaction(connection);
-
-
-static void print(DataTable dt)
+static void print(StreamReader sr)
 {
-    foreach (DataColumn column in dt.Columns)
+    while (!sr.EndOfStream)
     {
-        Console.Write("\t{0}", column.ColumnName);
-    }
-    Console.WriteLine();
-    foreach (DataRow row in dt.Rows)
-    {
-        var cells = row.ItemArray;
-        foreach (object? cell in cells)
-            Console.Write("\t{0}", cell);
-        Console.WriteLine();
+        Console.WriteLine(sr.ReadLine());
     }
 }
 
@@ -92,6 +75,7 @@ static ServiceProvider buildServiceProvider()
             (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
     )
     .AddSingleton<IQueryLogger, QueryLogger>()
+    .AddSingleton<ICsvExporter, CsvExporter>()
     .BuildServiceProvider();
 }
 
