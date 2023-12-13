@@ -18,6 +18,7 @@ namespace DBrowser.Controllers
 
         public void Show(DataTable dataTable)
         {
+            showResultTextBox.Text = "";
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 foreach (var item in dataRow.ItemArray)
@@ -28,6 +29,7 @@ namespace DBrowser.Controllers
         }
         public void Show(StreamReader streamReader)
         {
+            showResultTextBox.Text = "";
             String result = streamReader.ReadToEnd();
             showResultTextBox.Text = result;
         }

@@ -47,6 +47,7 @@ namespace DBrowser
             if (!openSQLitController.hasConnection())
             {
                 MessageBox.Show("Необходимо подключение");
+                return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             IQueryPlanAnalyzer qp = openSQLitController.GetQueryPlanAnalyzer();
@@ -71,6 +72,7 @@ namespace DBrowser
             if (!openSQLitController.hasConnection())
             {
                 MessageBox.Show("Необходимо подключение");
+                return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             IQueryExecutor qe = openSQLitController.GetQueryExecutor();

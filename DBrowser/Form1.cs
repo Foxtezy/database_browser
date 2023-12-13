@@ -108,7 +108,10 @@ namespace DBrowser
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
-            openFileDialog.ShowDialog();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                openDataBaseController.openDataBase(openFileDialog.FileName);
+            }
 
         }
 
