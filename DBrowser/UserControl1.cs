@@ -2,10 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.QueryExecutor;
+using Service.QueryPlan;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,22 +24,41 @@ namespace DBrowser
         private QueryEditorController queryEditorController;
         private ShowResultController showResultController;
         private FileController fileController;
-        private ServiceProvider serviceProvider;
+        private OpenSQLitController openSQLitController;
         private TabPage tabPage;
         private string filePath;
-        public UserControl1(TabPage tabPage, ServiceProvider serviceProvider, string filePath)
+        public UserControl1(TabPage tabPage, OpenSQLitController openSQLitController, string filePath)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);
             this.showResultController = new ShowResultController(showResultTextBox);
             this.fileController = new FileController();
-            this.serviceProvider = serviceProvider;
+            this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
         }
 
         private void начатьТранзакциюToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+        }
+        private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
+        {
+            if (!openSQLitController.hasConnection())
+            {
+                MessageBox.Show("Необходимо подключение");
+            }
+            DbConnection connection = openSQLitController.GetDbConnection();
+            IQueryPlanAnalyzer qp = openSQLitController.GetQueryPlanAnalyzer();
+            if (qp != null)
+            {
+                DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
+                showResultController.Show(dataTableResult);
+            }
+            else
+            {
+                MessageBox.Show("Query executor is null");
+            }
 
         }
 
@@ -47,6 +68,22 @@ namespace DBrowser
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!openSQLitController.hasConnection())
+            {
+                MessageBox.Show("Необходимо подключение");
+            }
+            DbConnection connection = openSQLitController.GetDbConnection();
+            IQueryExecutor qe = openSQLitController.GetQueryExecutor();
+            if (qe != null)
+            {
+                StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
+                showResultController.Show(sr);
+            }
+            else
+            {
+                MessageBox.Show("Query executor is null");
+            }
+
 
         }
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)

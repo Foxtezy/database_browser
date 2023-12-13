@@ -25,6 +25,7 @@ namespace DBrowser.Controllers
         private IQueryPlanAnalyzer planAnalyzer;
         private IQueryExecutor queryExecutor;
         private DbName dbName = DbName.SQLite;
+        private DbConnection connection;
         public OpenSQLitController(ServiceProvider serviceProvider)
         {
             var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
@@ -34,40 +35,30 @@ namespace DBrowser.Controllers
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
         }
-        public DbConnection openDataBase(string filename)
+        public void openDataBase(string filename)
         {
             DataBase dataBase = new DataBase(filename);
-            var connection = connectionService.Connect(dataBase.GetCredentials());
-<<<<<<< HEAD
-            string queryOfDBSceme = "SELECT DISTINCT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk " +
-                                        "FROM sqlite_master AS t, " +
-                                        "pragma_table_info(t.name) AS c " +
-                                        "WHERE t.type = 'table'";
-            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
-            while(!DBSceme.EndOfStream)
-            {
-                Debug.WriteLine(DBSceme.ReadLine());
-            }
-            
-=======
-            return connection;
->>>>>>> develop
+            this.connection = connectionService.Connect(dataBase.GetCredentials());
         }
 
+        public bool hasConnection()
+        {
+            return connection != null;
+        }
+        public DbConnection GetDbConnection()
+        {
+            return connection;
+        }
+        public IQueryPlanAnalyzer GetQueryPlanAnalyzer()
+        {
+            return planAnalyzer;
+        }
+        public IQueryExecutor GetQueryExecutor()
+        {
+            return queryExecutor;
+        }
         private static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows)
         {
-<<<<<<< HEAD
-            var connection = connectionService.Connect(dataBase.GetCredentials());
-            string queryOfUniqueTablesNames = "SELECT DISTINCT t.name " +
-                                        "FROM sqlite_master AS t " +
-                                        "WHERE t.type = 'table'";
-            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfUniqueTablesNames);
-            /*foreach(DataRow row in DBSceme.Rows)
-            {
-                string columnName = row[0].ToString();
-                dataBase.getTables().Add(columnName, new Table(columnName));
-            }*/
-=======
             var str = sr.ReadLine();
             if (str == null)
             {
@@ -79,7 +70,6 @@ namespace DBrowser.Controllers
                 rows.Add(new List<string>(str.Split(":")));
             }
             return true;
->>>>>>> develop
         }
     }
 }

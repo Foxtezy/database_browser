@@ -56,6 +56,8 @@
             // сохранитьToolStripMenuItem
             // 
             сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
+            сохранитьToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
+            сохранитьToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             сохранитьToolStripMenuItem.Size = new Size(78, 20);
             сохранитьToolStripMenuItem.Text = "Сохранить";
             сохранитьToolStripMenuItem.Click += сохранитьToolStripMenuItem_Click;
@@ -74,6 +76,7 @@
             отправитьToolStripMenuItem.Name = "отправитьToolStripMenuItem";
             отправитьToolStripMenuItem.Size = new Size(77, 20);
             отправитьToolStripMenuItem.Text = "Отправить";
+            отправитьToolStripMenuItem.Click += отправитьToolStripMenuItem_Click;
             // 
             // транзакцияToolStripMenuItem
             // 
@@ -90,6 +93,7 @@
             queryPlanToolStripMenuItem.Name = "queryPlanToolStripMenuItem";
             queryPlanToolStripMenuItem.Size = new Size(77, 20);
             queryPlanToolStripMenuItem.Text = "Query plan";
+            queryPlanToolStripMenuItem.Click += queryPlanToolStripMenuItem_Click;
             // 
             // splitContainer1
             // 

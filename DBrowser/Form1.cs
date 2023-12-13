@@ -52,19 +52,12 @@ namespace DBrowser
             aboutItem.Click += aboutItem_Click;
             menuStrip1.Items.Add(aboutItem);
 
-            void aboutItem_Click(object sender, EventArgs e)
-            {
-                MessageBox.Show("О программе");
-            }
-
-
-
         }
         void newQuery_Click(object sender, EventArgs e)
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.serviceProvider, "");
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -74,6 +67,10 @@ namespace DBrowser
         void openQuery_Click(object sender, EventArgs e)
         {
 
+        }
+        void aboutItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("О программе");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -112,6 +109,7 @@ namespace DBrowser
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
             openFileDialog.ShowDialog();
+
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
