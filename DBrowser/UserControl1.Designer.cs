@@ -30,7 +30,7 @@
         {
             menuStrip1 = new MenuStrip();
             сохранитьToolStripMenuItem = new ToolStripMenuItem();
-            удалитьСодержимоеToolStripMenuItem1 = new ToolStripMenuItem();
+            очиститьToolStripMenuItem = new ToolStripMenuItem();
             отправитьToolStripMenuItem = new ToolStripMenuItem();
             транзакцияToolStripMenuItem = new ToolStripMenuItem();
             queryPlanToolStripMenuItem = new ToolStripMenuItem();
@@ -46,7 +46,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, удалитьСодержимоеToolStripMenuItem1, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(810, 24);
@@ -58,14 +58,16 @@
             сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
             сохранитьToolStripMenuItem.Size = new Size(78, 20);
             сохранитьToolStripMenuItem.Text = "Сохранить";
-            сохранитьToolStripMenuItem.Click += удалитьToolStripMenuItem_Click;
+            сохранитьToolStripMenuItem.Click += сохранитьToolStripMenuItem_Click;
             // 
-            // удалитьСодержимоеToolStripMenuItem1
+            // очиститьToolStripMenuItem
             // 
-            удалитьСодержимоеToolStripMenuItem1.Name = "удалитьСодержимоеToolStripMenuItem1";
-            удалитьСодержимоеToolStripMenuItem1.Size = new Size(136, 20);
-            удалитьСодержимоеToolStripMenuItem1.Text = "Удалить содержимое";
-            удалитьСодержимоеToolStripMenuItem1.Click += удалитьСодержимоеToolStripMenuItem1_Click;
+            очиститьToolStripMenuItem.Checked = true;
+            очиститьToolStripMenuItem.CheckState = CheckState.Checked;
+            очиститьToolStripMenuItem.Name = "очиститьToolStripMenuItem";
+            очиститьToolStripMenuItem.Size = new Size(71, 20);
+            очиститьToolStripMenuItem.Text = "Очистить";
+            очиститьToolStripMenuItem.Click += очиститьToolStripMenuItem_Click;
             // 
             // отправитьToolStripMenuItem
             // 
@@ -118,7 +120,7 @@
             queryEditorTextBox.ScrollBars = ScrollBars.Both;
             queryEditorTextBox.Size = new Size(810, 281);
             queryEditorTextBox.TabIndex = 1;
-            queryEditorTextBox.TextChanged += textBox2_TextChanged;
+            queryEditorTextBox.TextChanged += queryTextBox_TextChanged;
             // 
             // showResultTextBox
             // 
@@ -153,13 +155,13 @@
         #endregion
 
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem сохранитьToolStripMenuItem;
-        private ToolStripMenuItem удалитьСодержимоеToolStripMenuItem1;
         private ToolStripMenuItem отправитьToolStripMenuItem;
         private ToolStripMenuItem транзакцияToolStripMenuItem;
         private ToolStripMenuItem queryPlanToolStripMenuItem;
         private SplitContainer splitContainer1;
         private TextBox showResultTextBox;
         private TextBox queryEditorTextBox;
+        private ToolStripMenuItem сохранитьToolStripMenuItem;
+        private ToolStripMenuItem очиститьToolStripMenuItem;
     }
 }

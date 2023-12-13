@@ -64,7 +64,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1();
+            UserControl1 frm = new UserControl1(newQuery, this.serviceProvider, "");
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -73,16 +73,15 @@ namespace DBrowser
         }
         void openQuery_Click(object sender, EventArgs e)
         {
-            TabPage newQuery = new TabPage();
-            newQuery.Text = "файл";
-            UserControl1 frm = new UserControl1();
-            newQuery.Controls.Add(frm);
-            frm.Dock = DockStyle.Fill;
-            frm.Show();
-            tabControl1.TabPages.Add(newQuery);
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void queryPlanToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

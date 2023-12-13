@@ -8,12 +8,12 @@ namespace DBrowser.Controllers
 {
     internal class QueryEditorController
     {
-        private TextBox currentTextBox = null;
-        private QueryParse queryParse = null;
+        private TextBox currentTextBox;
+        //private QueryParse queryParse = null;
         public QueryEditorController(TextBox textBox) 
         {
             this.currentTextBox = textBox;
-            this.queryParse = new QueryParse();
+        //    this.queryParse = new QueryParse();
         }
 
         public void removeQueryText()
@@ -25,7 +25,7 @@ namespace DBrowser.Controllers
         {
             return this.currentTextBox.Text;
         }
-
+        /*
         private class QueryParse
         {
             public bool checkQueryMisstakes()
@@ -33,6 +33,7 @@ namespace DBrowser.Controllers
                 return true; // TODO 
             }
         }
+        */
 
     }
 }

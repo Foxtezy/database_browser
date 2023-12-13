@@ -42,8 +42,12 @@ namespace DBrowser.Controllers
                                         "FROM sqlite_master AS t, " +
                                         "pragma_table_info(t.name) AS c " +
                                         "WHERE t.type = 'table'";
-            DataTable DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
-            Debug.WriteLine(DBSceme.Rows[0][0]);
+            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
+            while(!DBSceme.EndOfStream)
+            {
+                Debug.WriteLine(DBSceme.ReadLine());
+            }
+            
         }
     
         private void updateColumnNames(DataBase dataBase)
@@ -52,12 +56,12 @@ namespace DBrowser.Controllers
             string queryOfUniqueTablesNames = "SELECT DISTINCT t.name " +
                                         "FROM sqlite_master AS t " +
                                         "WHERE t.type = 'table'";
-            DataTable DBSceme = queryExecutor.Execute(connection, queryOfUniqueTablesNames);
-            foreach(DataRow row in DBSceme.Rows)
+            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfUniqueTablesNames);
+            /*foreach(DataRow row in DBSceme.Rows)
             {
                 string columnName = row[0].ToString();
                 dataBase.getTables().Add(columnName, new Table(columnName));
-            }
+            }*/
         }
     
     }
