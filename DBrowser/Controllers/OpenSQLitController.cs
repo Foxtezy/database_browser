@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Linq;
@@ -33,33 +34,11 @@ namespace DBrowser.Controllers
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
         }
-        public void openDataBase(string filename)
+        public DbConnection openDataBase(string filename)
         {
             DataBase dataBase = new DataBase(filename);
             var connection = connectionService.Connect(dataBase.GetCredentials());
-            string queryOfDBSceme = "SELECT t.name AS tbl_name, c.name, c.type, " +
-                                        "FROM sqlite_master AS t, " +
-                                        "pragma_table_info(t.name) AS c " +
-                                        "WHERE t.type = 'table'";
-            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
-            List<string> columns = new List<string>();
-            List<List<string>> rows = new List<List<string>>();
-            Boolean isSucc = parse(DBSceme, columns, rows);
-            if (!isSucc)
-            {
-                // не получается достать схему бд
-            }
-            foreach (List<string> row in rows)
-            {
-                Table table;
-                if (!dataBase.getTables().TryGetValue(row[0], out table))
-                {
-                    table = new Table(row[0]);
-                    dataBase.getTables().Add(row[0], table);
-                }
-                table.addColumn(row[1], row[2]);
-            }
-            
+            return connection;
         }
 
         private static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows)
