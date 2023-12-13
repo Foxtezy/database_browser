@@ -10,17 +10,17 @@ namespace DBrowser.Models
     public class Table
     {
         private string name;
-        private Dictionary<string, DataType> columnsTypes = new Dictionary<string, DataType>();
+        private Dictionary<string, string> columns = new Dictionary<string, string>();
         public Table(string name)
         {
             this.name = name;
         }
-        public void addColumnType(string column, DataType type)
+        public void addColumn(string column, string type)
         {
-            columnsTypes.Add(column, type);
+            columns.Add(column, type);
         }
-        public Dictionary<string, DataType> getColumnsTypes() {  
-            return columnsTypes;
+        public Dictionary<string, string> getColumns() {  
+            return columns;
         }
     }
 }

@@ -126,14 +126,22 @@
             // сохранитьФайлToolStripMenuItem
             // 
             сохранитьФайлToolStripMenuItem.Name = "сохранитьФайлToolStripMenuItem";
+<<<<<<< HEAD
             сохранитьФайлToolStripMenuItem.Size = new Size(165, 22);
+=======
+            сохранитьФайлToolStripMenuItem.Size = new Size(158, 22);
+>>>>>>> develop
             сохранитьФайлToolStripMenuItem.Text = "Сохранить файл";
             // 
             // автосохранениеToolStripMenuItem
             // 
             автосохранениеToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { отключеноToolStripMenuItem, минToolStripMenuItem });
             автосохранениеToolStripMenuItem.Name = "автосохранениеToolStripMenuItem";
+<<<<<<< HEAD
             автосохранениеToolStripMenuItem.Size = new Size(165, 22);
+=======
+            автосохранениеToolStripMenuItem.Size = new Size(158, 22);
+>>>>>>> develop
             автосохранениеToolStripMenuItem.Text = "Автосохранение";
             // 
             // отключеноToolStripMenuItem

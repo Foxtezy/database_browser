@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Linq;
@@ -33,11 +34,11 @@ namespace DBrowser.Controllers
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
         }
-        public void openDataBase(string filename)
+        public DbConnection openDataBase(string filename)
         {
             DataBase dataBase = new DataBase(filename);
-            updateColumnNames(dataBase);
             var connection = connectionService.Connect(dataBase.GetCredentials());
+<<<<<<< HEAD
             string queryOfDBSceme = "SELECT DISTINCT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk " +
                                         "FROM sqlite_master AS t, " +
                                         "pragma_table_info(t.name) AS c " +
@@ -48,10 +49,14 @@ namespace DBrowser.Controllers
                 Debug.WriteLine(DBSceme.ReadLine());
             }
             
+=======
+            return connection;
+>>>>>>> develop
         }
-    
-        private void updateColumnNames(DataBase dataBase)
+
+        private static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows)
         {
+<<<<<<< HEAD
             var connection = connectionService.Connect(dataBase.GetCredentials());
             string queryOfUniqueTablesNames = "SELECT DISTINCT t.name " +
                                         "FROM sqlite_master AS t " +
@@ -62,7 +67,19 @@ namespace DBrowser.Controllers
                 string columnName = row[0].ToString();
                 dataBase.getTables().Add(columnName, new Table(columnName));
             }*/
+=======
+            var str = sr.ReadLine();
+            if (str == null)
+            {
+                return false;
+            }
+            columns.AddRange(str.Split(":"));
+            while ((str = sr.ReadLine()) != null)
+            {
+                rows.Add(new List<string>(str.Split(":")));
+            }
+            return true;
+>>>>>>> develop
         }
-    
     }
 }
