@@ -36,29 +36,45 @@ namespace DBrowser.Controllers
         public void openDataBase(string filename)
         {
             DataBase dataBase = new DataBase(filename);
-            updateColumnNames(dataBase);
             var connection = connectionService.Connect(dataBase.GetCredentials());
-            string queryOfDBSceme = "SELECT DISTINCT t.name AS tbl_name, c.name, c.type, c.dflt_value, c.pk " +
+            string queryOfDBSceme = "SELECT t.name AS tbl_name, c.name, c.type, " +
                                         "FROM sqlite_master AS t, " +
                                         "pragma_table_info(t.name) AS c " +
                                         "WHERE t.type = 'table'";
-            DataTable DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
-            Debug.WriteLine(DBSceme.Rows[0][0]);
-        }
-    
-        private void updateColumnNames(DataBase dataBase)
-        {
-            var connection = connectionService.Connect(dataBase.GetCredentials());
-            string queryOfUniqueTablesNames = "SELECT DISTINCT t.name " +
-                                        "FROM sqlite_master AS t " +
-                                        "WHERE t.type = 'table'";
-            DataTable DBSceme = queryExecutor.Execute(connection, queryOfUniqueTablesNames);
-            foreach(DataRow row in DBSceme.Rows)
+            StreamReader DBSceme = queryExecutor.Execute(connection, queryOfDBSceme);
+            List<string> columns = new List<string>();
+            List<List<string>> rows = new List<List<string>>();
+            Boolean isSucc = parse(DBSceme, columns, rows);
+            if (!isSucc)
             {
-                string columnName = row[0].ToString();
-                dataBase.getTables().Add(columnName, new Table(columnName));
+                // не получается достать схему бд
             }
+            foreach (List<string> row in rows)
+            {
+                Table table;
+                if (!dataBase.getTables().TryGetValue(row[0], out table))
+                {
+                    table = new Table(row[0]);
+                    dataBase.getTables().Add(row[0], table);
+                }
+                table.addColumn(row[1], row[2]);
+            }
+            
         }
-    
+
+        private static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows)
+        {
+            var str = sr.ReadLine();
+            if (str == null)
+            {
+                return false;
+            }
+            columns.AddRange(str.Split(":"));
+            while ((str = sr.ReadLine()) != null)
+            {
+                rows.Add(new List<string>(str.Split(":")));
+            }
+            return true;
+        }
     }
 }
