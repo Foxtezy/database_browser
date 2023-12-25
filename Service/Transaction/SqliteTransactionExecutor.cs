@@ -16,7 +16,7 @@ namespace Service.Transaction
 
         private readonly ITransactionManager transactionManager;
 
-        public SqliteTransactionExecutor(ITransactionManager transactionManager) => this.transactionManager = transactionManager;
+        public SqliteTransactionExecutor(ITransactionManager transactjionManager) => this.transactionManager = transactionManager;
 
         public void BeginTransaction(DbConnection connection)
         {

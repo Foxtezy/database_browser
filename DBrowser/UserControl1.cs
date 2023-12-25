@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.QueryExecutor;
 using Service.QueryPlan;
+using Service.Transaction;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,15 +39,51 @@ namespace DBrowser
             this.filePath = filePath;
         }
 
-        private void начатьТранзакциюToolStripMenuItem_Click(object sender, EventArgs e)
+        private bool NeededTransactionStatus(bool neededStatus)
         {
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetITransactionExecutor();
+
+            return te.TransactionStatus(connection) == neededStatus;
+        }
+        private void beginTransaction_Click(object sender, EventArgs e)
+        {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
+
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetITransactionExecutor();
+            te!.BeginTransaction(connection);
 
         }
+        private void commitTransaction_Click(object sender, EventArgs e)
+        {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetITransactionExecutor();
+            te.CommitTransaction(connection);
+        }
+        private void rollbackTransaction_Click(object sender, EventArgs e)
+        {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetITransactionExecutor();
+            te.RollbackTransaction(connection);
+        }
+
+
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            if (!openSQLitController.hasConnection())
+            if (!checkDataBaseConnection())
             {
-                MessageBox.Show("Необходимо подключение");
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
@@ -69,9 +106,8 @@ namespace DBrowser
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!openSQLitController.hasConnection())
+            if (!checkDataBaseConnection())
             {
-                MessageBox.Show("Необходимо подключение");
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
@@ -119,6 +155,28 @@ namespace DBrowser
             {
                 tabPage.Text = tabPage.Text.Insert(tabPage.Text.Length, "*");
             }
+        }
+
+        private void saveQueryResponse(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "SQL response (*.txt)|*.txt";
+            saveFileDialog.Title = "Save SQL response file";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileController.writeInFile(saveFileDialog.FileName, showResultController.getResultContent());
+            }
+        }
+
+        private bool checkDataBaseConnection()
+        {
+            if (!openSQLitController.hasConnection())
+            {
+                MessageBox.Show("Необходимо подключение");
+                return false;
+            }
+            return true;
         }
     }
 }

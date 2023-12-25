@@ -33,7 +33,11 @@
             очиститьToolStripMenuItem = new ToolStripMenuItem();
             отправитьToolStripMenuItem = new ToolStripMenuItem();
             транзакцияToolStripMenuItem = new ToolStripMenuItem();
+            начатьToolStripMenuItem = new ToolStripMenuItem();
+            завершитьToolStripMenuItem = new ToolStripMenuItem();
+            откатитьToolStripMenuItem = new ToolStripMenuItem();
             queryPlanToolStripMenuItem = new ToolStripMenuItem();
+            сохранитьРезультатToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             queryEditorTextBox = new TextBox();
             showResultTextBox = new TextBox();
@@ -46,7 +50,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem, сохранитьРезультатToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(810, 24);
@@ -80,10 +84,31 @@
             // 
             // транзакцияToolStripMenuItem
             // 
+            транзакцияToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { начатьToolStripMenuItem, завершитьToolStripMenuItem, откатитьToolStripMenuItem });
             транзакцияToolStripMenuItem.Name = "транзакцияToolStripMenuItem";
             транзакцияToolStripMenuItem.Size = new Size(82, 20);
             транзакцияToolStripMenuItem.Text = "Транзакция";
-            транзакцияToolStripMenuItem.Click += начатьТранзакциюToolStripMenuItem_Click;
+            // 
+            // начатьToolStripMenuItem
+            // 
+            начатьToolStripMenuItem.Name = "начатьToolStripMenuItem";
+            начатьToolStripMenuItem.Size = new Size(180, 22);
+            начатьToolStripMenuItem.Text = "Начать";
+            начатьToolStripMenuItem.Click += beginTransaction_Click;
+            // 
+            // завершитьToolStripMenuItem
+            // 
+            завершитьToolStripMenuItem.Name = "завершитьToolStripMenuItem";
+            завершитьToolStripMenuItem.Size = new Size(180, 22);
+            завершитьToolStripMenuItem.Text = "Завершить";
+            завершитьToolStripMenuItem.Click += commitTransaction_Click;
+            // 
+            // откатитьToolStripMenuItem
+            // 
+            откатитьToolStripMenuItem.Name = "откатитьToolStripMenuItem";
+            откатитьToolStripMenuItem.Size = new Size(180, 22);
+            откатитьToolStripMenuItem.Text = "Откатить";
+            откатитьToolStripMenuItem.Click += rollbackTransaction_Click;
             // 
             // queryPlanToolStripMenuItem
             // 
@@ -94,6 +119,13 @@
             queryPlanToolStripMenuItem.Size = new Size(77, 20);
             queryPlanToolStripMenuItem.Text = "Query plan";
             queryPlanToolStripMenuItem.Click += queryPlanToolStripMenuItem_Click;
+            // 
+            // сохранитьРезультатToolStripMenuItem
+            // 
+            сохранитьРезультатToolStripMenuItem.Name = "сохранитьРезультатToolStripMenuItem";
+            сохранитьРезультатToolStripMenuItem.Size = new Size(134, 20);
+            сохранитьРезультатToolStripMenuItem.Text = "Сохранить результат";
+            сохранитьРезультатToolStripMenuItem.Click += saveQueryResponse;
             // 
             // splitContainer1
             // 
@@ -167,5 +199,9 @@
         private TextBox queryEditorTextBox;
         private ToolStripMenuItem сохранитьToolStripMenuItem;
         private ToolStripMenuItem очиститьToolStripMenuItem;
+        private ToolStripMenuItem сохранитьРезультатToolStripMenuItem;
+        private ToolStripMenuItem начатьToolStripMenuItem;
+        private ToolStripMenuItem завершитьToolStripMenuItem;
+        private ToolStripMenuItem откатитьToolStripMenuItem;
     }
 }

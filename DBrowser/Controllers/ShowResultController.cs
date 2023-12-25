@@ -10,11 +10,17 @@ namespace DBrowser.Controllers
 {
     internal class ShowResultController
     {
-        TextBox showResultTextBox;
+        private TextBox showResultTextBox;
         public ShowResultController(TextBox showResultTextBox)
         {
            this.showResultTextBox = showResultTextBox;
         }
+
+        public String getResultContent()
+        {
+            return this.showResultTextBox.Text;
+        }
+
 
         public void Show(DataTable dataTable)
         {
@@ -39,5 +45,7 @@ namespace DBrowser.Controllers
             showResultTextBox.Text = result;
             streamReader.Close();
         }
+
+
     }
 }
