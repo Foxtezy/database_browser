@@ -19,11 +19,16 @@ namespace DBrowser.Controllers
         public void Show(DataTable dataTable)
         {
             showResultTextBox.Text = "";
+            foreach(DataColumn  dataColumn in dataTable.Columns)
+            {
+                showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, dataColumn.ColumnName + "\t");
+            }
+            showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, "\n" + "\t");
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 foreach (var item in dataRow.ItemArray)
                 {
-                    Console.WriteLine(item);
+                    showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, item.ToString() + "\t");
                 }
             }
         }
@@ -32,6 +37,7 @@ namespace DBrowser.Controllers
             showResultTextBox.Text = "";
             String result = streamReader.ReadToEnd();
             showResultTextBox.Text = result;
+            streamReader.Close();
         }
     }
 }
