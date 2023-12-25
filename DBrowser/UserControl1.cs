@@ -40,9 +40,8 @@ namespace DBrowser
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            if (!openSQLitController.hasConnection())
+            if (!checkDataBaseConnection())
             {
-                MessageBox.Show("Необходимо подключение");
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
@@ -60,6 +59,10 @@ namespace DBrowser
         }
         private void BeginTransaction_Click(object sender, EventArgs e)
         {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.BeginTransaction(connection);
@@ -67,6 +70,10 @@ namespace DBrowser
 
         private void CommitTransaction_Click(object sender, EventArgs e)
         {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.CommitTransaction(connection);
@@ -74,6 +81,10 @@ namespace DBrowser
 
         private void RollbackTransaction_Click(object sender, EventArgs e)
         {
+            if (!checkDataBaseConnection())
+            {
+                return;
+            }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.RollbackTransaction(connection);
@@ -85,9 +96,8 @@ namespace DBrowser
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!openSQLitController.hasConnection())
+            if (!checkDataBaseConnection())
             {
-                MessageBox.Show("Необходимо подключение");
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
@@ -135,6 +145,28 @@ namespace DBrowser
             {
                 tabPage.Text = tabPage.Text.Insert(tabPage.Text.Length, "*");
             }
+        }
+
+        private void saveQueryResponse(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "SQL response (*.txt)|*.txt";
+            saveFileDialog.Title = "Save SQL response file";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileController.writeInFile(saveFileDialog.FileName, showResultController.getResultContent());
+            }
+        }
+
+        private bool checkDataBaseConnection()
+        {
+            if (!openSQLitController.hasConnection())
+            {
+                MessageBox.Show("Необходимо подключение");
+                return false;
+            }
+            return true;
         }
     }
 }

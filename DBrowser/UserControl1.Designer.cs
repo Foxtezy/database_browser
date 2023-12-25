@@ -40,6 +40,7 @@
             splitContainer1 = new SplitContainer();
             queryEditorTextBox = new TextBox();
             showResultTextBox = new TextBox();
+            сохранитьОтветToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -49,7 +50,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, транзакцияToolStripMenuItem, queryPlanToolStripMenuItem, сохранитьОтветToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(810, 24);
@@ -160,6 +161,13 @@
             showResultTextBox.Size = new Size(810, 285);
             showResultTextBox.TabIndex = 0;
             // 
+            // сохранитьОтветToolStripMenuItem
+            // 
+            сохранитьОтветToolStripMenuItem.Name = "сохранитьОтветToolStripMenuItem";
+            сохранитьОтветToolStripMenuItem.Size = new Size(110, 20);
+            сохранитьОтветToolStripMenuItem.Text = "Сохранить ответ";
+            сохранитьОтветToolStripMenuItem.Click += saveQueryResponse;
+            // 
             // UserControl1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -194,5 +202,6 @@
         private ToolStripMenuItem начатьToolStripMenuItem;
         private ToolStripMenuItem завершитьToolStripMenuItem;
         private ToolStripMenuItem отменитьИзмененияToolStripMenuItem;
+        private ToolStripMenuItem сохранитьОтветToolStripMenuItem;
     }
 }

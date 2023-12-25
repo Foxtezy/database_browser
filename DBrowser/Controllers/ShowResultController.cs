@@ -10,7 +10,7 @@ namespace DBrowser.Controllers
 {
     internal class ShowResultController
     {
-        TextBox showResultTextBox;
+        private TextBox showResultTextBox;
         public ShowResultController(TextBox showResultTextBox)
         {
            this.showResultTextBox = showResultTextBox;
@@ -31,6 +31,10 @@ namespace DBrowser.Controllers
                     showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, item.ToString() + "\t");
                 }
             }
+        }
+        public String getResultContent()
+        {
+            return this.showResultTextBox.Text;
         }
         public void Show(StreamReader streamReader)
         {
