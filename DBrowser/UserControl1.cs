@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.QueryExecutor;
 using Service.QueryPlan;
+using Service.Transaction;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,17 +60,23 @@ namespace DBrowser
         }
         private void BeginTransaction_Click(object sender, EventArgs e)
         {
-
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
+            te!.BeginTransaction(connection);
         }
 
         private void CommitTransaction_Click(object sender, EventArgs e)
         {
-
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
+            te!.CommitTransaction(connection);
         }
 
         private void RollbackTransaction_Click(object sender, EventArgs e)
         {
-
+            DbConnection connection = openSQLitController.GetDbConnection();
+            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
+            te!.RollbackTransaction(connection);
         }
 
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)
