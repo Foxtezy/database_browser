@@ -24,6 +24,7 @@ namespace DBrowser.Controllers
         private IConnectionService connectionService;
         private IQueryPlanAnalyzer planAnalyzer;
         private IQueryExecutor queryExecutor;
+        private ITransactionExecutor transExec;
         private DbName dbName = DbName.SQLite;
         private DbConnection connection;
         public OpenSQLitController(ServiceProvider serviceProvider)
@@ -31,9 +32,11 @@ namespace DBrowser.Controllers
             var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
             var factAnalyzer = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
             var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
+            var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
             connectionService = factConnection!(dbName);
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
+            transExec = factTransact!(dbName);
         }
         public void openDataBase(string filename)
         {
@@ -56,6 +59,10 @@ namespace DBrowser.Controllers
         public IQueryExecutor GetQueryExecutor()
         {
             return queryExecutor;
+        }
+        public ITransactionExecutor GetTransactionExecutor()
+        {
+            return transExec;
         }
         private static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows)
         {

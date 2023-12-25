@@ -33,6 +33,9 @@
             очиститьToolStripMenuItem = new ToolStripMenuItem();
             отправитьToolStripMenuItem = new ToolStripMenuItem();
             транзакцияToolStripMenuItem = new ToolStripMenuItem();
+            начатьToolStripMenuItem = new ToolStripMenuItem();
+            завершитьToolStripMenuItem = new ToolStripMenuItem();
+            отменитьИзмененияToolStripMenuItem = new ToolStripMenuItem();
             queryPlanToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             queryEditorTextBox = new TextBox();
@@ -80,10 +83,31 @@
             // 
             // транзакцияToolStripMenuItem
             // 
+            транзакцияToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { начатьToolStripMenuItem, завершитьToolStripMenuItem, отменитьИзмененияToolStripMenuItem });
             транзакцияToolStripMenuItem.Name = "транзакцияToolStripMenuItem";
             транзакцияToolStripMenuItem.Size = new Size(82, 20);
             транзакцияToolStripMenuItem.Text = "Транзакция";
-            транзакцияToolStripMenuItem.Click += начатьТранзакциюToolStripMenuItem_Click;
+            // 
+            // начатьToolStripMenuItem
+            // 
+            начатьToolStripMenuItem.Name = "начатьToolStripMenuItem";
+            начатьToolStripMenuItem.Size = new Size(191, 22);
+            начатьToolStripMenuItem.Text = "Начать";
+            начатьToolStripMenuItem.Click += BeginTransaction_Click;
+            // 
+            // завершитьToolStripMenuItem
+            // 
+            завершитьToolStripMenuItem.Name = "завершитьToolStripMenuItem";
+            завершитьToolStripMenuItem.Size = new Size(191, 22);
+            завершитьToolStripMenuItem.Text = "Завершить";
+            завершитьToolStripMenuItem.Click += CommitTransaction_Click;
+            // 
+            // отменитьИзмененияToolStripMenuItem
+            // 
+            отменитьИзмененияToolStripMenuItem.Name = "отменитьИзмененияToolStripMenuItem";
+            отменитьИзмененияToolStripMenuItem.Size = new Size(191, 22);
+            отменитьИзмененияToolStripMenuItem.Text = "Отменить изменения";
+            отменитьИзмененияToolStripMenuItem.Click += RollbackTransaction_Click;
             // 
             // queryPlanToolStripMenuItem
             // 
@@ -167,5 +191,8 @@
         private TextBox queryEditorTextBox;
         private ToolStripMenuItem сохранитьToolStripMenuItem;
         private ToolStripMenuItem очиститьToolStripMenuItem;
+        private ToolStripMenuItem начатьToolStripMenuItem;
+        private ToolStripMenuItem завершитьToolStripMenuItem;
+        private ToolStripMenuItem отменитьИзмененияToolStripMenuItem;
     }
 }

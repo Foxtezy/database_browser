@@ -37,11 +37,6 @@ namespace DBrowser
             this.tabPage = tabPage;
             this.filePath = filePath;
         }
-
-        private void начатьТранзакциюToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
             if (!openSQLitController.hasConnection())
@@ -60,6 +55,20 @@ namespace DBrowser
             {
                 MessageBox.Show("Query executor is null");
             }
+
+        }
+        private void BeginTransaction_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CommitTransaction_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RollbackTransaction_Click(object sender, EventArgs e)
+        {
 
         }
 
