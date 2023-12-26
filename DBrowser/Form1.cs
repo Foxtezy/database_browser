@@ -3,8 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.ConnectionService;
 using Service.QueryPlan;
+using Service.Transaction;
+using Service.TransactionManager;
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Windows.Forms;
@@ -16,12 +19,18 @@ namespace DBrowser
     {
         private OpenSQLitController openDataBaseController;
         private ServiceProvider serviceProvider;
+        private ToolStripLabel transactionStatus = new ToolStripLabel();
         public Form1(ServiceProvider serviceProvider)
         {
+            InitializeComponent();
             this.serviceProvider = serviceProvider;
             openDataBaseController = new OpenSQLitController(serviceProvider);
+            var managerTransaction = openDataBaseController.GetTransactionManager();
 
-            InitializeComponent();
+            transactionStatus.Text = $"Transaction: {managerTransaction.IsInTransaction()}";
+            statusStrip1.Items.Add(transactionStatus);
+            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
+
             tabControl1.TabPages.Clear();
             tabControl1.SelectedIndexChanged += SelectedTabForNewPage;
             TabPage newPage = new TabPage();
@@ -59,7 +68,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -70,7 +79,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -92,6 +101,70 @@ namespace DBrowser
             MessageBox.Show("О программе");
         }
 
+        private void BeginTransaction_Click(object sender, EventArgs e)
+        {
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == false)
+            {
+                te!.BeginTransaction(connection);
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+
+        private void CommitTransaction_Click(object sender, EventArgs e)
+        {
+
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.CommitTransaction(connection);
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+        private void setTransactionStatus(bool status)
+        {
+            transactionStatus.Text = $"Transaction: {status}";
+            if (status)
+            {
+                транзакцияToolStripMenuItem.Text += " ✓"; 
+            }
+            else
+            {
+                транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
+        }
+
+
+        private void RollbackTransaction_Click(object sender, EventArgs e)
+        {
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.RollbackTransaction(connection);
+                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+        private void noteAboutTransactionStatus()
+        {
+            MessageBox.Show("Unavaivable action for current transaction status", "Check transaction status", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -152,6 +225,11 @@ namespace DBrowser
         }
 
         private void нетToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }

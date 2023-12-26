@@ -30,10 +30,10 @@ namespace DBrowser
         private OpenSQLitController openSQLitController;
         private TabPage tabPage;
         private string filePath;
-        private bool inTransaction;
         private ToolStripLabel responseTime;
+        private ToolStripLabel hasTransaction;
         private string baseResponseTimeText = "Время получения ответа: ";
-        public UserControl1(TabPage tabPage, OpenSQLitController openSQLitController, string filePath)
+        public UserControl1(TabPage tabPage, OpenSQLitController openSQLitController, string filePath, ToolStripLabel transactionStatus)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);
@@ -42,10 +42,8 @@ namespace DBrowser
             this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
-            this.inTransaction = false;
             this.responseTime = new ToolStripLabel();
             responseTime.Text = baseResponseTimeText;
-            statusStrip1.Items.Add(this.responseTime);
 
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
@@ -58,13 +56,20 @@ namespace DBrowser
             IQueryPlanAnalyzer qp = openSQLitController.GetQueryPlanAnalyzer();
             if (qp != null)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                responseTime.Text = baseResponseTimeText;
-                DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
-                showResultController.Show(dataTableResult);
-                stopwatch.Stop();
-                long time = stopwatch.ElapsedMilliseconds;
-                responseTime.Text += time.ToString() + "ms";
+                try
+                {
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    responseTime.Text = baseResponseTimeText;
+                    DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
+                    showResultController.Show(dataTableResult);
+                    stopwatch.Stop();
+                    long time = stopwatch.ElapsedMilliseconds;
+                    responseTime.Text += time.ToString() + "ms";
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
@@ -72,55 +77,7 @@ namespace DBrowser
             }
 
         }
-        private void BeginTransaction_Click(object sender, EventArgs e)
-        {
-            if (!checkDataBaseConnection())
-            {
-                return;
-            }
-            DbConnection connection = openSQLitController.GetDbConnection();
-            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-            ITransactionManager tm = openSQLitController.GetTransactionManager();
-            if (tm.IsInTransaction() == false)
-            {
-                te!.BeginTransaction(connection);
-                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text + " ✓";
-            }
 
-        }
-
-        private void CommitTransaction_Click(object sender, EventArgs e)
-        {
-            if (!checkDataBaseConnection())
-            {
-                return;
-            }
-            DbConnection connection = openSQLitController.GetDbConnection();
-            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-            ITransactionManager tm = openSQLitController.GetTransactionManager();
-            if (tm.IsInTransaction() == true)
-            {
-                te!.CommitTransaction(connection);
-                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
-            }
-        }
-
-        private void RollbackTransaction_Click(object sender, EventArgs e)
-        {
-            if (!checkDataBaseConnection())
-            {
-                return;
-            }
-            DbConnection connection = openSQLitController.GetDbConnection();
-            ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-
-            ITransactionManager tm = openSQLitController.GetTransactionManager();
-            if (tm.IsInTransaction() == true)
-            {
-                te!.RollbackTransaction(connection);
-                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
-            }
-        }
 
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)
         {
@@ -137,13 +94,21 @@ namespace DBrowser
             IQueryExecutor qe = openSQLitController.GetQueryExecutor();
             if (qe != null)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                responseTime.Text = baseResponseTimeText;
-                StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
-                showResultController.Show(sr);
-                stopwatch.Stop();
-                long time = stopwatch.ElapsedMilliseconds;
-                responseTime.Text += time.ToString() + "ms";
+                try
+                {
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    responseTime.Text = baseResponseTimeText;
+                    StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
+                    showResultController.Show(sr);
+                    stopwatch.Stop();
+                    long time = stopwatch.ElapsedMilliseconds;
+                    responseTime.Text += time.ToString() + "ms";
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
             }
             else
             {
@@ -180,7 +145,7 @@ namespace DBrowser
         {
             this.filePath = filePath;
             queryEditorController.setContent(fileController.ReadFromFile(filePath));
-            tabPage.Text= Path.GetFileNameWithoutExtension(filePath);
+            tabPage.Text = Path.GetFileNameWithoutExtension(filePath);
         }
 
         private void queryTextBox_TextChanged(object sender, EventArgs e)
@@ -214,6 +179,18 @@ namespace DBrowser
         }
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void toolStripStatusLabel1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void statusStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }

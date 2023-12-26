@@ -36,7 +36,6 @@ namespace DBrowser.Controllers
             var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
             var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
             this.transactionManager = serviceProvider.GetService<ITransactionManager>();
-            transactionManager!.AddEventHandler((sen, arg) => MessageBox.Show($"Transaction: {transactionManager.IsInTransaction()}"));
             connectionService = factConnection!(dbName);
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
