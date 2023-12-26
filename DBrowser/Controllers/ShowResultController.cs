@@ -21,15 +21,16 @@ namespace DBrowser.Controllers
             showResultTextBox.Text = "";
             foreach(DataColumn  dataColumn in dataTable.Columns)
             {
-                showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, dataColumn.ColumnName + "\t");
+                showResultTextBox.Text += (dataColumn.ColumnName + " ");
             }
-            showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, "\n" + "\t");
+            showResultTextBox.Text += "\n";
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 foreach (var item in dataRow.ItemArray)
                 {
-                    showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, item.ToString() + "\t");
+                    showResultTextBox.Text = showResultTextBox.Text.Insert(showResultTextBox.Text.Length, item.ToString() + " ");
                 }
+                showResultTextBox.Text += "\n";
             }
         }
         public String getResultContent()

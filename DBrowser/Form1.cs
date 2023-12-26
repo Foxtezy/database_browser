@@ -23,10 +23,12 @@ namespace DBrowser
 
             InitializeComponent();
             tabControl1.TabPages.Clear();
+            tabControl1.SelectedIndexChanged += SelectedTabForNewPage;
             TabPage newPage = new TabPage();
             newPage.Text = "+";
             newPage.Click += newQuery_Click;
             tabControl1.TabPages.Add(newPage);
+            newQuery_Click(null, EventArgs.Empty);
 
             this.StartPosition = FormStartPosition.WindowsDefaultLocation;
 
@@ -62,15 +64,27 @@ namespace DBrowser
             frm.Dock = DockStyle.Fill;
             frm.Show();
             tabControl1.TabPages.Add(newQuery);
-            newQuery.Select();
+            tabControl1.SelectedTab = newQuery;
+        }
+        void newQuery_Click(object sender, EventArgs e, string filePath)
+        {
+            TabPage newQuery = new TabPage();
+            newQuery.Text = "Новый запрос";
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
+            newQuery.Controls.Add(frm);
+            frm.Dock = DockStyle.Fill;
+            frm.Show();
+            tabControl1.TabPages.Add(newQuery);
+            tabControl1.SelectedTab = newQuery;
+            frm.AddQueryFromFile(filePath);
         }
         void openQuery_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
+            openFileDialog.Filter = "Файлы SQL (*.sql)|*.sql;";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                openDataBaseController.openDataBase(openFileDialog.FileName);
+                newQuery_Click(null, EventArgs.Empty, openFileDialog.FileName);
             }
         }
         void aboutItem_Click(object sender, EventArgs e)
@@ -117,7 +131,6 @@ namespace DBrowser
             {
                 openDataBaseController.openDataBase(openFileDialog.FileName);
             }
-
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -130,6 +143,17 @@ namespace DBrowser
             }
         }
 
+        private void SelectedTabForNewPage(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0)
+            {
+                newQuery_Click(null, EventArgs.Empty);
+            }
+        }
 
+        private void нетToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

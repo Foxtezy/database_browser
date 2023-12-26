@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -28,6 +29,9 @@ namespace DBrowser
         private OpenSQLitController openSQLitController;
         private TabPage tabPage;
         private string filePath;
+        private bool inTransaction;
+        private ToolStripLabel responseTime;
+        private string baseResponseTimeText = "Время получения ответа: ";
         public UserControl1(TabPage tabPage, OpenSQLitController openSQLitController, string filePath)
         {
             InitializeComponent();
@@ -37,6 +41,11 @@ namespace DBrowser
             this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
+            this.inTransaction = false;
+            this.responseTime = new ToolStripLabel();
+            responseTime.Text = baseResponseTimeText;
+            statusStrip1.Items.Add(this.responseTime);
+
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
@@ -48,8 +57,13 @@ namespace DBrowser
             IQueryPlanAnalyzer qp = openSQLitController.GetQueryPlanAnalyzer();
             if (qp != null)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                responseTime.Text = baseResponseTimeText;
                 DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
                 showResultController.Show(dataTableResult);
+                stopwatch.Stop();
+                long time = stopwatch.ElapsedMilliseconds;
+                responseTime.Text += time.ToString() + "ms";
             }
             else
             {
@@ -59,40 +73,47 @@ namespace DBrowser
         }
         private void BeginTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection())
+            if (!checkDataBaseConnection() || inTransaction)
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.BeginTransaction(connection);
+            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text + " ✓";
+            inTransaction = true;
         }
 
         private void CommitTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection())
+            if (!checkDataBaseConnection() || !inTransaction)
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.CommitTransaction(connection);
+            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            inTransaction = false;
         }
 
         private void RollbackTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection())
+            if (!checkDataBaseConnection() || !inTransaction)
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
             te!.RollbackTransaction(connection);
+            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            inTransaction = false;
         }
 
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)
         {
             queryEditorController.removeQueryText();
+            responseTime.Text = baseResponseTimeText;
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -104,8 +125,13 @@ namespace DBrowser
             IQueryExecutor qe = openSQLitController.GetQueryExecutor();
             if (qe != null)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                responseTime.Text = baseResponseTimeText;
                 StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
                 showResultController.Show(sr);
+                stopwatch.Stop();
+                long time = stopwatch.ElapsedMilliseconds;
+                responseTime.Text += time.ToString() + "ms";
             }
             else
             {
@@ -116,7 +142,7 @@ namespace DBrowser
         }
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (filePath == "")
+            if (this.filePath == "")
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "SQL Files (*.sql)|*.sql";
@@ -125,18 +151,24 @@ namespace DBrowser
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     this.filePath = saveFileDialog.FileName;
-                    fileController.writeInFile(filePath, queryEditorController.getQueryContent());
+                    fileController.WriteInFile(filePath, queryEditorController.getQueryContent());
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
                     tabPage.Text = fileName;
                 }
             }
             else
             {
-                fileController.writeInFile(filePath, queryEditorController.getQueryContent());
+                fileController.WriteInFile(filePath, queryEditorController.getQueryContent());
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 tabPage.Text = fileName;
             }
+        }
 
+        public void AddQueryFromFile(string filePath)
+        {
+            this.filePath = filePath;
+            queryEditorController.setContent(fileController.ReadFromFile(filePath));
+            tabPage.Text= Path.GetFileNameWithoutExtension(filePath);
         }
 
         private void queryTextBox_TextChanged(object sender, EventArgs e)
@@ -155,7 +187,7 @@ namespace DBrowser
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                fileController.writeInFile(saveFileDialog.FileName, showResultController.getResultContent());
+                fileController.WriteInFile(saveFileDialog.FileName, showResultController.getResultContent());
             }
         }
 
@@ -167,6 +199,11 @@ namespace DBrowser
                 return false;
             }
             return true;
+        }
+
+        private void toolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

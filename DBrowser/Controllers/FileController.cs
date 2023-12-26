@@ -9,7 +9,7 @@ namespace DBrowser.Controllers
 {
     internal class FileController
     {
-        public void writeInFile(string filePath, string content)
+        public void WriteInFile(string filePath, string content)
         {
             try
             {
@@ -25,6 +25,12 @@ namespace DBrowser.Controllers
             {
                 MessageBox.Show($"Error saving SQL file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public string ReadFromFile(string filePath)
+        {
+            string contnent = File.ReadAllText(filePath);
+            return contnent;
         }
     }
     

@@ -127,7 +127,6 @@
             // 
             сохранитьФайлToolStripMenuItem.Name = "сохранитьФайлToolStripMenuItem";
             сохранитьФайлToolStripMenuItem.Size = new Size(165, 22);
-            сохранитьФайлToolStripMenuItem.Size = new Size(158, 22);
             сохранитьФайлToolStripMenuItem.Text = "Сохранить файл";
             // 
             // автосохранениеToolStripMenuItem
@@ -172,10 +171,13 @@
             нетToolStripMenuItem.Name = "нетToolStripMenuItem";
             нетToolStripMenuItem.Size = new Size(180, 22);
             нетToolStripMenuItem.Text = "Нет";
+            нетToolStripMenuItem.Click += нетToolStripMenuItem_Click;
             // 
             // минToolStripMenuItem1
             // 
+            минToolStripMenuItem1.Checked = true;
             минToolStripMenuItem1.CheckOnClick = true;
+            минToolStripMenuItem1.CheckState = CheckState.Checked;
             минToolStripMenuItem1.Name = "минToolStripMenuItem1";
             минToolStripMenuItem1.Size = new Size(180, 22);
             минToolStripMenuItem1.Text = "5 мин";
@@ -206,7 +208,7 @@
             tabPage2.Margin = new Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(4, 3, 4, 3);
-            tabPage2.Size = new Size(1014, 504);
+            tabPage2.Size = new Size(1014, 508);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;

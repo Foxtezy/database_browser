@@ -20,6 +20,11 @@ namespace DBrowser.Controllers
         {
             this.currentTextBox.Text = "";
         }
+
+        public void setContent(string newContent)
+        {
+            this.currentTextBox.Text = newContent;
+        }
         
         public string getQueryContent()
         {
