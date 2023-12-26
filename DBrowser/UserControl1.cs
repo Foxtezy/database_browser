@@ -4,6 +4,7 @@ using Service;
 using Service.QueryExecutor;
 using Service.QueryPlan;
 using Service.Transaction;
+using Service.TransactionManager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -73,41 +74,52 @@ namespace DBrowser
         }
         private void BeginTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection() || inTransaction)
+            if (!checkDataBaseConnection())
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-            te!.BeginTransaction(connection);
-            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text + " ✓";
-            inTransaction = true;
+            ITransactionManager tm = openSQLitController.GetTransactionManager();
+            if (tm.IsInTransaction() == false)
+            {
+                te!.BeginTransaction(connection);
+                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text + " ✓";
+            }
+
         }
 
         private void CommitTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection() || !inTransaction)
+            if (!checkDataBaseConnection())
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-            te!.CommitTransaction(connection);
-            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
-            inTransaction = false;
+            ITransactionManager tm = openSQLitController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.CommitTransaction(connection);
+                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
         }
 
         private void RollbackTransaction_Click(object sender, EventArgs e)
         {
-            if (!checkDataBaseConnection() || !inTransaction)
+            if (!checkDataBaseConnection())
             {
                 return;
             }
             DbConnection connection = openSQLitController.GetDbConnection();
             ITransactionExecutor te = openSQLitController.GetTransactionExecutor();
-            te!.RollbackTransaction(connection);
-            транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
-            inTransaction = false;
+
+            ITransactionManager tm = openSQLitController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.RollbackTransaction(connection);
+                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
         }
 
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)

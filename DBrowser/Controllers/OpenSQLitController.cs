@@ -5,6 +5,7 @@ using Service.ConnectionService;
 using Service.QueryExecutor;
 using Service.QueryPlan;
 using Service.Transaction;
+using Service.TransactionManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace DBrowser.Controllers
         private IQueryExecutor queryExecutor;
         private ITransactionExecutor transactionExecutor;
         private DbName dbName = DbName.SQLite;
+        private ITransactionManager transactionManager;
         private DbConnection connection;
         public OpenSQLitController(ServiceProvider serviceProvider)
         {
@@ -33,6 +35,8 @@ namespace DBrowser.Controllers
             var factAnalyzer = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
             var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
             var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
+            this.transactionManager = serviceProvider.GetService<ITransactionManager>();
+            transactionManager!.AddEventHandler((sen, arg) => MessageBox.Show($"Transaction: {transactionManager.IsInTransaction()}"));
             connectionService = factConnection!(dbName);
             planAnalyzer = factAnalyzer!(dbName);
             queryExecutor = factQueryExecutor!(dbName);
@@ -55,6 +59,11 @@ namespace DBrowser.Controllers
         public IQueryPlanAnalyzer GetQueryPlanAnalyzer()
         {
             return planAnalyzer;
+        }
+
+        public ITransactionManager GetTransactionManager()
+        {
+            return transactionManager;
         }
         public IQueryExecutor GetQueryExecutor()
         {
