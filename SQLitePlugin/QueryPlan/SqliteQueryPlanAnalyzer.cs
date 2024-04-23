@@ -1,21 +1,22 @@
-﻿using Service.Logger;
-using Service.QueryParser;
+﻿
+using PluginBase.Logger;
+using PluginBase.QueryParser;
+using PluginBase.QueryPlan;
 using System.Data;
 using System.Data.Common;
 
-namespace Service.QueryPlan
+namespace SqlitePlugin.QueryPlan
 {
     public class SqliteQueryPlanAnalyzer : IQueryPlanAnalyzer
     {
-        public DbName Name => DbName.SQLite;
 
         private readonly IQueryParser queryParser;
 
         private readonly IQueryLogger logger;
 
-        public SqliteQueryPlanAnalyzer(Func<DbName, IQueryParser> queryParserFactory, IQueryLogger logger)
+        public SqliteQueryPlanAnalyzer(IQueryParser queryParser, IQueryLogger logger)
         {
-            this.queryParser = queryParserFactory(Name);
+            this.queryParser = queryParser;
             this.logger = logger;
         }
 

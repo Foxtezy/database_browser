@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace Service.QueryPlan
+namespace PluginBase.QueryPlan
 {
-    public interface IQueryPlanAnalyzer : IDbOperation
+    public interface IQueryPlanAnalyzer
     {
 
         DataTable Analyze(DbConnection connection, string query);

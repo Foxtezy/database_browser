@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.QueryParser
+namespace PluginBase.QueryParser
 {
-    public interface IQueryParser : IDbOperation
+    public interface IQueryParser
     {
         void FindTransactionInQuery(DbConnection connection, string query);
     }

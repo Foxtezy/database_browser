@@ -9,6 +9,7 @@ using Service.Transaction;
 using Service.TransactionManager;
 using Service.QueryParser;
 using Service.Logger;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var serviceProvider = buildServiceProvider();
 
@@ -28,43 +29,15 @@ IQueryExecutor qe = factExec!(dbName);
 transactionManager!.AddEventHandler((sen, arg) => Console.WriteLine($"Transaction: {transactionManager.IsInTransaction()}"));
 
 ConnectionCredentials connCred = new();
-connCred.Path = "C:\\Program Files (x86)\\DB Browser for SQLite\\test.db";
+connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
 using var connection = cs.Connect(connCred);
 
-string command = "SELECT t.name AS tbl_name, c.name, c.type " +
-                                        "FROM sqlite_master AS t, " +
-                                        "pragma_table_info(t.name) AS c " +
-                                        "WHERE t.type = 'table'";
+string command = "SELECT * FROM artists";
 
 StreamReader sr = qe.Execute(connection, command);
-//print(sr);
-List<string> columns = new List<string>();
-List<List<string>> rows = new List<List<string>>();
-Boolean isSucc = parse(sr, columns, rows);
+print(sr);
 
-foreach (List<string> row in rows)
-{
-    foreach (string cell in row)
-    {
-        Console.WriteLine(cell);
-    }
-}
-
-
-static Boolean parse(StreamReader sr, List<string> columns, List<List<string>> rows) 
-{
-    var str = sr.ReadLine();
-    if (str == null)
-    {
-        return false;
-    }
-    columns.AddRange(str.Split(":"));
-    while((str = sr.ReadLine()) != null)
-    {
-        rows.Add(new List<string>(str.Split(":")));
-    }
-    return true;
-}
+Activator.CreateInstance(typeof(DbName));
 
 static void print(StreamReader sr)
 {
@@ -77,7 +50,7 @@ static void print(StreamReader sr)
 static ServiceProvider buildServiceProvider()
 {
     return new ServiceCollection()
-    .AddSingleton<IQueryPlanAnalyzer, SqliteQueryPlanAnalyzer>()
+    .AddSingleton<IQueryPlanAnalyzer>((IQueryPlanAnalyzer)Activator.CreateInstance(typeof(SqliteQueryPlanAnalyzer)))
     .AddSingleton(
         factory => (Func<DbName, IQueryPlanAnalyzer?>)
             (key => factory.GetServices<IQueryPlanAnalyzer>().FirstOrDefault(o => o.Name == key))

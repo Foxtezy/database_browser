@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Transaction
+namespace PluginBase.Transaction
 {
-    public interface ITransactionExecutor : IDbOperation
+    public interface ITransactionExecutor
     {
         void BeginTransaction(DbConnection connection);
 

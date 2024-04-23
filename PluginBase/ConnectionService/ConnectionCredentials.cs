@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Logger
+namespace PluginBase.ConnectionService
 {
-    public interface IQueryLogger : IObservable
+    public class ConnectionCredentials
     {
-        void Log(string query);
+        public string? Path { get; set; }
     }
 }

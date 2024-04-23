@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Logger
+namespace PluginBase.Logger
 {
     public class QueryLogger : IQueryLogger
     {

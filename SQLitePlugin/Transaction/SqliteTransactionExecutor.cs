@@ -1,18 +1,13 @@
-﻿using Service.TransactionManager;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Service.Transaction
+
+namespace SqlitePlugin.Transaction
 {
     public class SqliteTransactionExecutor : ITransactionExecutor
     {
-        public DbName Name => DbName.SQLite;
 
         private readonly ITransactionManager transactionManager;
 

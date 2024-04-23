@@ -1,9 +1,9 @@
 ﻿using System.Data.Common;
 using System.Data;
 
-namespace Service.QueryExecutor
+namespace PluginBase.QueryExecutor
 {
-    public interface IQueryExecutor : IDbOperation
+    public interface IQueryExecutor
     {
         StreamReader Execute(DbConnection connection, string query);
     }

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ConnectionService
+namespace PluginBase.QueryExecutor
 {
-    public interface IConnectionService : IDbOperation
+    public interface ICsvExporter
     {
-        DbConnection Connect(ConnectionCredentials credentials);
+        void DataReaderToCsvFile(DbDataReader dataReader, string path, string separator);
     }
 }

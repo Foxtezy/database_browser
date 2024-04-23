@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using PluginBase.ConnectionService;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -6,11 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ConnectionService
+namespace SqlitePlugin.ConnectionService
 {
     public class SqliteConnectionService : IConnectionService
     {
-        public DbName Name => DbName.SQLite;
 
         public DbConnection Connect(ConnectionCredentials credentials)
         {

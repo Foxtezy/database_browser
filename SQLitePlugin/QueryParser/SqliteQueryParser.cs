@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
-using Service.Transaction;
-using Service.TransactionManager;
+using PluginBase.QueryParser;
+using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -8,19 +9,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.QueryParser
+namespace SqlitePlugin.QueryParser
 {
     public class SqliteQueryParser : IQueryParser
     {
-        public DbName Name => DbName.SQLite;
 
         private readonly ITransactionExecutor transactionExecutor;
 
         private readonly ITransactionManager transactionManager;
 
-        public SqliteQueryParser(Func<DbName, ITransactionExecutor> transactionExecutorFactory, ITransactionManager transactionManager)
+        public SqliteQueryParser(ITransactionExecutor transactionExecutor, ITransactionManager transactionManager)
         {
-            this.transactionExecutor = transactionExecutorFactory(Name);
+            this.transactionExecutor = transactionExecutor;
             this.transactionManager = transactionManager;
         }
 

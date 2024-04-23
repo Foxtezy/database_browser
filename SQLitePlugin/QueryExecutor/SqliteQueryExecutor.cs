@@ -1,16 +1,13 @@
 ﻿using System.Data.Common;
 using System.Data;
-using Service.Transaction;
-using Service.QueryParser;
-using Service.Logger;
-using Service.TransactionManager;
-using System.IO;
+using PluginBase.QueryExecutor;
+using PluginBase.QueryParser;
+using PluginBase.Logger;
 
-namespace Service.QueryExecutor
+namespace SqlitePlugin.QueryExecutor
 {
     public class SqliteQueryExecutor : IQueryExecutor
     {
-        public DbName Name => DbName.SQLite;
 
         private readonly IQueryParser queryParser;
 
@@ -18,9 +15,9 @@ namespace Service.QueryExecutor
 
         private readonly IQueryLogger logger;
 
-        public SqliteQueryExecutor(Func<DbName, IQueryParser> queryParserFactory, ICsvExporter csvExporter, IQueryLogger logger)
+        public SqliteQueryExecutor(IQueryParser queryParser, ICsvExporter csvExporter, IQueryLogger logger)
         {
-            this.queryParser = queryParserFactory(Name);
+            this.queryParser = queryParser;
             this.csvExporter = csvExporter;
             this.logger = logger;
         }
