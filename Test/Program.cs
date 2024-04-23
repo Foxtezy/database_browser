@@ -1,32 +1,20 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PluginBase.ConnectionService;
+using PluginBase.QueryExecutor;
 using Service;
-using Service.QueryPlan;
-using Service.QueryExecutor;
-using System.Data;
-using Service.ConnectionService;
-using Service.Transaction;
-using Service.TransactionManager;
-using Service.QueryParser;
-using Service.Logger;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Reflection;
 
-var serviceProvider = buildServiceProvider();
 
-DbName dbName = DbName.SQLite;
 
-var factPlan = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
-var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
-var factTransaction = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
-var transactionManager = serviceProvider.GetService<ITransactionManager>();
-var factExec = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
 
-IQueryPlanAnalyzer pa = factPlan!(dbName);
-IConnectionService cs = factConnection!(dbName);
-ITransactionExecutor te = factTransaction!(dbName);
-IQueryExecutor qe = factExec!(dbName);
+PluginLoader p = new();
 
-transactionManager!.AddEventHandler((sen, arg) => Console.WriteLine($"Transaction: {transactionManager.IsInTransaction()}"));
+Dictionary<string, IServiceProvider> plugins = p.getServiceProviders();
+ 
+IServiceProvider s = plugins["SQLite"];
+IConnectionService? cs = s.GetService<IConnectionService>();
+IQueryExecutor? qe = s.GetService<IQueryExecutor>();
+
 
 ConnectionCredentials connCred = new();
 connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
@@ -37,8 +25,6 @@ string command = "SELECT * FROM artists";
 StreamReader sr = qe.Execute(connection, command);
 print(sr);
 
-Activator.CreateInstance(typeof(DbName));
-
 static void print(StreamReader sr)
 {
     while (!sr.EndOfStream)
@@ -47,37 +33,5 @@ static void print(StreamReader sr)
     }
 }
 
-static ServiceProvider buildServiceProvider()
-{
-    return new ServiceCollection()
-    .AddSingleton<IQueryPlanAnalyzer>((IQueryPlanAnalyzer)Activator.CreateInstance(typeof(SqliteQueryPlanAnalyzer)))
-    .AddSingleton(
-        factory => (Func<DbName, IQueryPlanAnalyzer?>)
-            (key => factory.GetServices<IQueryPlanAnalyzer>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IQueryExecutor, SqliteQueryExecutor>()
-    .AddSingleton(
-        factory => (Func<DbName, IQueryExecutor?>)
-            (key => factory.GetServices<IQueryExecutor>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IQueryParser, SqliteQueryParser>()
-    .AddSingleton(
-        factory => (Func<DbName, IQueryParser?>)
-            (key => factory.GetServices<IQueryParser>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IConnectionService, SqliteConnectionService>()
-    .AddSingleton(
-        factory => (Func<DbName, IConnectionService?>)
-            (key => factory.GetServices<IConnectionService>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<ITransactionManager, TransactionManager>()
-    .AddSingleton<ITransactionExecutor, SqliteTransactionExecutor>()
-    .AddSingleton(
-        factory => (Func<DbName, ITransactionExecutor?>)
-            (key => factory.GetServices<ITransactionExecutor>().FirstOrDefault(o => o.Name == key))
-    )
-    .AddSingleton<IQueryLogger, QueryLogger>()
-    .AddSingleton<ICsvExporter, CsvExporter>()
-    .BuildServiceProvider();
-}
+
 

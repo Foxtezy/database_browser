@@ -3,6 +3,7 @@ using System.Data;
 using PluginBase.QueryExecutor;
 using PluginBase.QueryParser;
 using PluginBase.Logger;
+using System.IO;
 
 namespace SqlitePlugin.QueryExecutor
 {
