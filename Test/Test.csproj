@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Service\Service.csproj" />
+	<ProjectReference Include="..\PSQLPlugin\PSQLPlugin.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

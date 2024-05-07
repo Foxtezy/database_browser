@@ -15,6 +15,7 @@ namespace PluginBase.Transaction
 
         void RollbackTransaction(DbConnection connection);
 
+        //true if in transaction
         bool TransactionStatus(DbConnection connection);
     }
 }

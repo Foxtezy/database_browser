@@ -8,9 +8,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBrowser", "DBrowser\DBrowser.csproj", "{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginBase", "PluginBase\PluginBase.csproj", "{C2D091C3-6D69-4F60-9C9B-27C65B420B1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase", "PluginBase\PluginBase.csproj", "{C2D091C3-6D69-4F60-9C9B-27C65B420B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePlugin", "SQLitePlugin\SQLitePlugin.csproj", "{6F8996A2-0882-4444-8978-9F12E72F70CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLitePlugin", "SQLitePlugin\SQLitePlugin.csproj", "{6F8996A2-0882-4444-8978-9F12E72F70CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSQLPlugin", "PSQLPlugin\PSQLPlugin.csproj", "{0F3AC3CE-EC8B-408B-B377-72E222519BBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{6F8996A2-0882-4444-8978-9F12E72F70CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F8996A2-0882-4444-8978-9F12E72F70CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F8996A2-0882-4444-8978-9F12E72F70CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3AC3CE-EC8B-408B-B377-72E222519BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3AC3CE-EC8B-408B-B377-72E222519BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3AC3CE-EC8B-408B-B377-72E222519BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3AC3CE-EC8B-408B-B377-72E222519BBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

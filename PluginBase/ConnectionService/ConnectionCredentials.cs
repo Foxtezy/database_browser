@@ -9,5 +9,8 @@ namespace PluginBase.ConnectionService
     public class ConnectionCredentials
     {
         public string? Path { get; set; }
+        public string? DatabaseName { get; set; }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
     }
 }
