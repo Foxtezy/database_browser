@@ -13,7 +13,7 @@ namespace DBrowser.Views
         public void showDataBaseSceme(DataBase dataBase)
         {
             TreeNode treeNode = new TreeNode();
-            treeNode.Tag = 
+            //treeNode.Tag = 
             
         }
     }

@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             menuStrip1 = new MenuStrip();
-            удалитьToolStripMenuItem = new ToolStripMenuItem();
-            удалитьToolStripMenuItem1 = new ToolStripMenuItem();
+            сохранитьToolStripMenuItem = new ToolStripMenuItem();
+            очиститьToolStripMenuItem = new ToolStripMenuItem();
             отправитьToolStripMenuItem = new ToolStripMenuItem();
-            начатьТранзакциюToolStripMenuItem = new ToolStripMenuItem();
             queryPlanToolStripMenuItem = new ToolStripMenuItem();
+            сохранитьОтветToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
-            richTextBox1 = new RichTextBox();
-            textBox1 = new TextBox();
+            queryEditorTextBox = new TextBox();
+            showResultTextBox = new TextBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -46,44 +46,54 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { удалитьToolStripMenuItem, удалитьToolStripMenuItem1, отправитьToolStripMenuItem, начатьТранзакциюToolStripMenuItem, queryPlanToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { сохранитьToolStripMenuItem, очиститьToolStripMenuItem, отправитьToolStripMenuItem, queryPlanToolStripMenuItem, сохранитьОтветToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(810, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
-            // удалитьToolStripMenuItem
+            // сохранитьToolStripMenuItem
             // 
-            удалитьToolStripMenuItem.Name = "удалитьToolStripMenuItem";
-            удалитьToolStripMenuItem.Size = new Size(78, 20);
-            удалитьToolStripMenuItem.Text = "Сохранить";
-            удалитьToolStripMenuItem.Click += удалитьToolStripMenuItem_Click;
+            сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
+            сохранитьToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
+            сохранитьToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            сохранитьToolStripMenuItem.Size = new Size(78, 20);
+            сохранитьToolStripMenuItem.Text = "Сохранить";
+            сохранитьToolStripMenuItem.Click += сохранитьToolStripMenuItem_Click;
             // 
-            // удалитьToolStripMenuItem1
+            // очиститьToolStripMenuItem
             // 
-            удалитьToolStripMenuItem1.Name = "удалитьToolStripMenuItem1";
-            удалитьToolStripMenuItem1.Size = new Size(63, 20);
-            удалитьToolStripMenuItem1.Text = "Удалить";
+            очиститьToolStripMenuItem.Checked = true;
+            очиститьToolStripMenuItem.CheckState = CheckState.Checked;
+            очиститьToolStripMenuItem.Name = "очиститьToolStripMenuItem";
+            очиститьToolStripMenuItem.Size = new Size(71, 20);
+            очиститьToolStripMenuItem.Text = "Очистить";
+            очиститьToolStripMenuItem.Click += очиститьToolStripMenuItem_Click;
             // 
             // отправитьToolStripMenuItem
             // 
             отправитьToolStripMenuItem.Name = "отправитьToolStripMenuItem";
             отправитьToolStripMenuItem.Size = new Size(77, 20);
             отправитьToolStripMenuItem.Text = "Отправить";
-            // 
-            // начатьТранзакциюToolStripMenuItem
-            // 
-            начатьТранзакциюToolStripMenuItem.Name = "начатьТранзакциюToolStripMenuItem";
-            начатьТранзакциюToolStripMenuItem.Size = new Size(82, 20);
-            начатьТранзакциюToolStripMenuItem.Text = "Транзакция";
-            начатьТранзакциюToolStripMenuItem.Click += начатьТранзакциюToolStripMenuItem_Click;
+            отправитьToolStripMenuItem.Click += отправитьToolStripMenuItem_Click;
             // 
             // queryPlanToolStripMenuItem
             // 
+            queryPlanToolStripMenuItem.Checked = true;
+            queryPlanToolStripMenuItem.CheckOnClick = true;
+            queryPlanToolStripMenuItem.CheckState = CheckState.Checked;
             queryPlanToolStripMenuItem.Name = "queryPlanToolStripMenuItem";
             queryPlanToolStripMenuItem.Size = new Size(77, 20);
             queryPlanToolStripMenuItem.Text = "Query plan";
+            queryPlanToolStripMenuItem.Click += queryPlanToolStripMenuItem_Click;
+            // 
+            // сохранитьОтветToolStripMenuItem
+            // 
+            сохранитьОтветToolStripMenuItem.Name = "сохранитьОтветToolStripMenuItem";
+            сохранитьОтветToolStripMenuItem.Size = new Size(110, 20);
+            сохранитьОтветToolStripMenuItem.Text = "Сохранить ответ";
+            сохранитьОтветToolStripMenuItem.Click += saveQueryResponse;
             // 
             // splitContainer1
             // 
@@ -94,32 +104,37 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(richTextBox1);
+            splitContainer1.Panel1.Controls.Add(queryEditorTextBox);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(textBox1);
+            splitContainer1.Panel2.Controls.Add(showResultTextBox);
             splitContainer1.Size = new Size(810, 570);
             splitContainer1.SplitterDistance = 281;
             splitContainer1.TabIndex = 1;
             // 
-            // richTextBox1
+            // queryEditorTextBox
             // 
-            richTextBox1.Dock = DockStyle.Fill;
-            richTextBox1.Location = new Point(0, 0);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(810, 281);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
+            queryEditorTextBox.AcceptsReturn = true;
+            queryEditorTextBox.AcceptsTab = true;
+            queryEditorTextBox.Dock = DockStyle.Fill;
+            queryEditorTextBox.Location = new Point(0, 0);
+            queryEditorTextBox.Multiline = true;
+            queryEditorTextBox.Name = "queryEditorTextBox";
+            queryEditorTextBox.ScrollBars = ScrollBars.Both;
+            queryEditorTextBox.Size = new Size(810, 281);
+            queryEditorTextBox.TabIndex = 1;
+            queryEditorTextBox.TextChanged += queryTextBox_TextChanged;
             // 
-            // textBox1
+            // showResultTextBox
             // 
-            textBox1.Dock = DockStyle.Fill;
-            textBox1.Location = new Point(0, 0);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(810, 285);
-            textBox1.TabIndex = 0;
+            showResultTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            showResultTextBox.Location = new Point(0, 0);
+            showResultTextBox.Multiline = true;
+            showResultTextBox.Name = "showResultTextBox";
+            showResultTextBox.ReadOnly = true;
+            showResultTextBox.Size = new Size(810, 282);
+            showResultTextBox.TabIndex = 0;
             // 
             // UserControl1
             // 
@@ -132,6 +147,7 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -143,13 +159,14 @@
         #endregion
 
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem удалитьToolStripMenuItem;
-        private ToolStripMenuItem удалитьToolStripMenuItem1;
         private ToolStripMenuItem отправитьToolStripMenuItem;
-        private ToolStripMenuItem начатьТранзакциюToolStripMenuItem;
         private ToolStripMenuItem queryPlanToolStripMenuItem;
         private SplitContainer splitContainer1;
-        private RichTextBox richTextBox1;
-        private TextBox textBox1;
+        private TextBox showResultTextBox;
+        private TextBox queryEditorTextBox;
+        private ToolStripMenuItem сохранитьToolStripMenuItem;
+        private ToolStripMenuItem очиститьToolStripMenuItem;
+        private ToolStripMenuItem сохранитьОтветToolStripMenuItem;
+        private StatusStrip statusStrip1;
     }
 }

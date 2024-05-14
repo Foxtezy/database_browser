@@ -3,8 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Service;
 using Service.ConnectionService;
 using Service.QueryPlan;
+using Service.Transaction;
+using Service.TransactionManager;
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Windows.Forms;
@@ -16,17 +19,25 @@ namespace DBrowser
     {
         private OpenSQLitController openDataBaseController;
         private ServiceProvider serviceProvider;
+        private ToolStripLabel transactionStatus = new ToolStripLabel();
         public Form1(ServiceProvider serviceProvider)
         {
+            InitializeComponent();
             this.serviceProvider = serviceProvider;
             openDataBaseController = new OpenSQLitController(serviceProvider);
+            var managerTransaction = openDataBaseController.GetTransactionManager();
 
-            InitializeComponent();
+            transactionStatus.Text = $"Transaction: {managerTransaction.IsInTransaction()}";
+            statusStrip1.Items.Add(transactionStatus);
+            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
+
             tabControl1.TabPages.Clear();
+            tabControl1.SelectedIndexChanged += SelectedTabForNewPage;
             TabPage newPage = new TabPage();
             newPage.Text = "+";
             newPage.Click += newQuery_Click;
             tabControl1.TabPages.Add(newPage);
+            newQuery_Click(null, EventArgs.Empty);
 
             this.StartPosition = FormStartPosition.WindowsDefaultLocation;
 
@@ -52,37 +63,114 @@ namespace DBrowser
             aboutItem.Click += aboutItem_Click;
             menuStrip1.Items.Add(aboutItem);
 
-            void aboutItem_Click(object sender, EventArgs e)
-            {
-                MessageBox.Show("О программе");
-            }
-
-
-
         }
         void newQuery_Click(object sender, EventArgs e)
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1();
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
             tabControl1.TabPages.Add(newQuery);
-            newQuery.Select();
+            tabControl1.SelectedTab = newQuery;
+        }
+        void newQuery_Click(object sender, EventArgs e, string filePath)
+        {
+            TabPage newQuery = new TabPage();
+            newQuery.Text = "Новый запрос";
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
+            newQuery.Controls.Add(frm);
+            frm.Dock = DockStyle.Fill;
+            frm.Show();
+            tabControl1.TabPages.Add(newQuery);
+            tabControl1.SelectedTab = newQuery;
+            frm.AddQueryFromFile(filePath);
         }
         void openQuery_Click(object sender, EventArgs e)
         {
-            TabPage newQuery = new TabPage();
-            newQuery.Text = "файл";
-            UserControl1 frm = new UserControl1();
-            newQuery.Controls.Add(frm);
-            frm.Dock = DockStyle.Fill;
-            frm.Show();
-            tabControl1.TabPages.Add(newQuery);
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Файлы SQL (*.sql)|*.sql;";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                newQuery_Click(null, EventArgs.Empty, openFileDialog.FileName);
+            }
+        }
+        void aboutItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("О программе");
         }
 
+        private void BeginTransaction_Click(object sender, EventArgs e)
+        {
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == false)
+            {
+                te!.BeginTransaction(connection);
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+
+        private void CommitTransaction_Click(object sender, EventArgs e)
+        {
+
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.CommitTransaction(connection);
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+        private void setTransactionStatus(bool status)
+        {
+            transactionStatus.Text = $"Transaction: {status}";
+            if (status)
+            {
+                транзакцияToolStripMenuItem.Text += " ✓"; 
+            }
+            else
+            {
+                транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
+        }
+
+
+        private void RollbackTransaction_Click(object sender, EventArgs e)
+        {
+            DbConnection connection = openDataBaseController.GetDbConnection();
+            ITransactionExecutor te = openDataBaseController.GetTransactionExecutor();
+
+            ITransactionManager tm = openDataBaseController.GetTransactionManager();
+            if (tm.IsInTransaction() == true)
+            {
+                te!.RollbackTransaction(connection);
+                транзакцияToolStripMenuItem.Text = транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+            }
+            else
+            {
+                noteAboutTransactionStatus();
+            }
+        }
+        private void noteAboutTransactionStatus()
+        {
+            MessageBox.Show("Unavaivable action for current transaction status", "Check transaction status", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void queryPlanToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
@@ -112,7 +200,10 @@ namespace DBrowser
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
-            openFileDialog.ShowDialog();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                openDataBaseController.openDataBase(openFileDialog.FileName);
+            }
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -125,6 +216,22 @@ namespace DBrowser
             }
         }
 
+        private void SelectedTabForNewPage(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0)
+            {
+                newQuery_Click(null, EventArgs.Empty);
+            }
+        }
 
+        private void нетToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
     }
 }
