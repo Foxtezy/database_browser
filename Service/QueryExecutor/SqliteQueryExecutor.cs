@@ -2,7 +2,9 @@
 using System.Data;
 using Service.Transaction;
 using Service.QueryParser;
+using Service.Logger;
 using Service.TransactionManager;
+using System.IO;
 
 namespace Service.QueryExecutor
 {
@@ -12,13 +14,18 @@ namespace Service.QueryExecutor
 
         private readonly IQueryParser queryParser;
 
-        public SqliteQueryExecutor(Func<DbName, IQueryParser> queryParserFactory)
+        private readonly ICsvExporter csvExporter;
+
+        private readonly IQueryLogger logger;
+
+        public SqliteQueryExecutor(Func<DbName, IQueryParser> queryParserFactory, ICsvExporter csvExporter, IQueryLogger logger)
         {
             this.queryParser = queryParserFactory(Name);
+            this.csvExporter = csvExporter;
+            this.logger = logger;
         }
 
-        //Поддержать обработку больших запросов
-        public DataTable Execute(DbConnection connection, string query)
+        public StreamReader Execute(DbConnection connection, string query)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -26,11 +33,12 @@ namespace Service.QueryExecutor
             }
             DbCommand command = connection.CreateCommand();
             command.CommandText = query;
+            logger.Log(query);
             DbDataReader reader = command.ExecuteReader();
-            DataTable dataTable = new();
-            dataTable.Load(reader);
+         
+            csvExporter.DataReaderToCsvFile(reader, "tmp.csv", ":");
             queryParser.FindTransactionInQuery(connection, query);
-            return dataTable;
+            return new StreamReader("tmp.csv"); ;
         }
     }
 }

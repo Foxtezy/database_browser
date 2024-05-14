@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
@@ -6,6 +5,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{B09FC82B-324E-4DC3-AFD0-EE3D8806F703}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{AB82A568-B280-4531-8B45-6CE33C84406E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBrowser", "DBrowser\DBrowser.csproj", "{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +22,10 @@ Global
 		{AB82A568-B280-4531-8B45-6CE33C84406E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB82A568-B280-4531-8B45-6CE33C84406E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB82A568-B280-4531-8B45-6CE33C84406E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EED9262-6C5C-4C36-B5B5-9B2EF0607473}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
