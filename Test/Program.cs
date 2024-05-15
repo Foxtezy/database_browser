@@ -3,8 +3,6 @@ using PluginBase.ConnectionService;
 using PluginBase.QueryExecutor;
 using Service;
 using System.Reflection;
-using PSQLPlugin;
-
 
 /**
  * Как подключить плагины?
