@@ -66,7 +66,7 @@ namespace DBrowser
                     long time = stopwatch.ElapsedMilliseconds;
                     responseTime.Text += time.ToString() + "ms";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -104,11 +104,11 @@ namespace DBrowser
                     long time = stopwatch.ElapsedMilliseconds;
                     responseTime.Text += time.ToString() + "ms";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
+
             }
             else
             {

@@ -133,6 +133,7 @@
             showResultTextBox.Multiline = true;
             showResultTextBox.Name = "showResultTextBox";
             showResultTextBox.ReadOnly = true;
+            showResultTextBox.ScrollBars = ScrollBars.Both;
             showResultTextBox.Size = new Size(810, 282);
             showResultTextBox.TabIndex = 0;
             // 
