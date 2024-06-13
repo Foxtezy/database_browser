@@ -1,11 +1,11 @@
 ﻿using DBrowser.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Service;
-using Service.ConnectionService;
-using Service.QueryExecutor;
-using Service.QueryPlan;
-using Service.Transaction;
-using Service.TransactionManager;
+using PluginBase.ConnectionService;
+using PluginBase.QueryExecutor;
+using PluginBase.QueryPlan;
+using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;

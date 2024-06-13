@@ -1,10 +1,10 @@
 ﻿using DBrowser.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Service;
-using Service.ConnectionService;
-using Service.QueryPlan;
-using Service.Transaction;
-using Service.TransactionManager;
+using PluginBase.ConnectionService;
+using PluginBase.QueryPlan;
+using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using System;
 using System.Data;
 using System.Data.Common;
@@ -12,24 +12,33 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
+using DBrowser.ViewModels;
 
 namespace DBrowser
 {
     public partial class Form1 : Form
     {
-        private OpenSQLitController openDataBaseController;
+        //private OpenSQLitController openDataBaseController;
         private ServiceProvider serviceProvider;
         private ToolStripLabel transactionStatus = new ToolStripLabel();
-        public Form1(ServiceProvider serviceProvider)
+        private Form1ViewModel form1ViewModel;
+        private IServiceProvider current_plugin;
+        public Form1()
         {
+            this.form1ViewModel = new Form1ViewModel(this);
             InitializeComponent();
-            this.serviceProvider = serviceProvider;
+            this.current_plugin = form1ViewModel.ChoosePlugin();
+
+
+            /*
             openDataBaseController = new OpenSQLitController(serviceProvider);
             var managerTransaction = openDataBaseController.GetTransactionManager();
 
-            transactionStatus.Text = $"Transaction: {managerTransaction.IsInTransaction()}";
+            */
+            transactionStatus.Text = $"Transaction: ???";
+
             statusStrip1.Items.Add(transactionStatus);
-            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
+//            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
 
             tabControl1.TabPages.Clear();
             tabControl1.SelectedIndexChanged += SelectedTabForNewPage;
@@ -62,7 +71,7 @@ namespace DBrowser
             ToolStripMenuItem aboutItem = new ToolStripMenuItem("О программе");
             aboutItem.Click += aboutItem_Click;
             menuStrip1.Items.Add(aboutItem);
-
+            
         }
         void newQuery_Click(object sender, EventArgs e)
         {

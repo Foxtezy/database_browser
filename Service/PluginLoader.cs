@@ -20,6 +20,11 @@ namespace Service
             return files.Select(f => LoadPlugin(f.FullName)).ToList();
         }
 
+        public DirectoryInfo[] GetPluginDirectories()
+        {
+            return pluginsDir.GetDirectories();
+        }
+
         public Dictionary<string, IServiceProvider> getServiceProviders()
         {
             List<Assembly> assemblies = LoadPlugins();

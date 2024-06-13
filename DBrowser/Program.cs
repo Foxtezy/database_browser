@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
-using Service.ConnectionService;
-using Service.Logger;
-using Service.QueryExecutor;
-using Service.QueryParser;
-using Service.QueryPlan;
-using Service.Transaction;
-using Service.TransactionManager;
+using PluginBase.ConnectionService;
+using PluginBase.Logger;
+using PluginBase.QueryExecutor;
+using PluginBase.QueryParser;
+using PluginBase.QueryPlan;
+using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using Service;
 
 namespace DBrowser
@@ -21,9 +21,10 @@ namespace DBrowser
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1(buildServiceProvider()));
-        }
 
+            Application.Run(new Form1());
+        }
+        /*
         static ServiceProvider buildServiceProvider()
         {
             return new ServiceCollection()
@@ -56,6 +57,6 @@ namespace DBrowser
             .AddSingleton<IQueryLogger, QueryLogger>()
             .AddSingleton<ICsvExporter, CsvExporter>()
             .BuildServiceProvider();
-        }
+        }*/
     }
 }
