@@ -17,6 +17,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Reflection;
+using DBrowser.Forms;
 
 namespace DBrowser.Controllers
 {
@@ -40,12 +42,20 @@ namespace DBrowser.Controllers
             queryExecutor = factQueryExecutor;
             transactionExecutor = factTransact;
         }
-        public void openDataBase(string filename)
+        public void openDataBase()
         {
-            DataBase dataBase = new DataBase(filename);
-            this.connection = connectionService.Connect(dataBase.GetCredentials());
+            ConnectionCredentials cred = getFilledCredentials(connectionService.GetNecessaryFields());
+            this.connection = connectionService.Connect(cred);
         }
 
+        public ConnectionCredentials getFilledCredentials(List<string> necessaryFields)
+        {
+            ConnectionCredentials credentials = new();
+            DynamicCredentialForm dynamicCredentialForm = new DynamicCredentialForm(necessaryFields, credentials);
+            DialogResult result = dynamicCredentialForm.ShowDialog();
+
+            return credentials;
+        }
         public bool hasConnection()
         {
             return connection != null;

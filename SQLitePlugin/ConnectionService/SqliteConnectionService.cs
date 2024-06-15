@@ -20,5 +20,9 @@ namespace SqlitePlugin.ConnectionService
             }
             return new SqliteConnection($"Data Source={credentials.Path};Mode=ReadWrite");
         }
+        public List<string> GetNecessaryFields()
+        {
+            return new List<string>() {"Path"};
+        }
     }
 }

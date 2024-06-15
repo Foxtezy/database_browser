@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using PluginBase.ConnectionService;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace PSQLPlugin.ConnectionService
@@ -28,6 +29,11 @@ namespace PSQLPlugin.ConnectionService
             }
             
             return new NpgsqlDataSourceBuilder($"Host={creds.Path};Username={creds.Username};Password={creds.Password};Database={creds.DatabaseName}").Build().OpenConnection(); ;
+        }
+
+        public List<string> GetNecessaryFields()
+        {
+            return new List<string> { "Path", "Username", "Password", "DatabaseName" };
         }
     }
 }

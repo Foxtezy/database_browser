@@ -10,5 +10,6 @@ namespace PluginBase.ConnectionService
     public interface IConnectionService
     {
         DbConnection Connect(ConnectionCredentials credentials);
+        List<string> GetNecessaryFields();
     }
 }
