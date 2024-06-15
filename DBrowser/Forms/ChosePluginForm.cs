@@ -57,7 +57,7 @@ namespace DBrowser.Forms
 
         private void Cancel_button_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
         private void Plugin_list_ItemCheck(object sender, ItemCheckEventArgs e)

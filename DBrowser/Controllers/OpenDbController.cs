@@ -20,26 +20,25 @@ using System.Xml.Linq;
 
 namespace DBrowser.Controllers
 {
-    public class OpenSQLitController
+    public class OpenDbController
     {
         private IConnectionService connectionService;
         private IQueryPlanAnalyzer planAnalyzer;
         private IQueryExecutor queryExecutor;
         private ITransactionExecutor transactionExecutor;
-       // private DbName dbName = DbName.SQLite;
         private ITransactionManager transactionManager;
         private DbConnection connection;
-        public OpenSQLitController(ServiceProvider serviceProvider)
+        public OpenDbController(IServiceProvider serviceProvider)
         {
-          //  var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
-           // var factAnalyzer = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
-           // var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
-            //var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
-           // this.transactionManager = serviceProvider.GetService<ITransactionManager>();
-           // connectionService = factConnection!(dbName);
-           // planAnalyzer = factAnalyzer!(dbName);
-           // queryExecutor = factQueryExecutor!(dbName);
-           // transactionExecutor = factTransact!(dbName);
+            var factConnection = serviceProvider.GetService<IConnectionService>();
+            var factAnalyzer = serviceProvider.GetService<IQueryPlanAnalyzer>();
+            var factQueryExecutor = serviceProvider.GetService<IQueryExecutor>();
+            var factTransact = serviceProvider.GetService<ITransactionExecutor>();
+            this.transactionManager = serviceProvider.GetService<ITransactionManager>();
+            connectionService = factConnection;
+            planAnalyzer = factAnalyzer;
+            queryExecutor = factQueryExecutor;
+            transactionExecutor = factTransact;
         }
         public void openDataBase(string filename)
         {

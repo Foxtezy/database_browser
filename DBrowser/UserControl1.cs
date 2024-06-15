@@ -27,13 +27,13 @@ namespace DBrowser
         private QueryEditorController queryEditorController;
         private ShowResultController showResultController;
         private FileController fileController;
-        private OpenSQLitController openSQLitController;
+        private OpenDbController openSQLitController;
         private TabPage tabPage;
         private string filePath;
         private ToolStripLabel responseTime;
         private ToolStripLabel hasTransaction;
         private string baseResponseTimeText = "Время получения ответа: ";
-        public UserControl1(TabPage tabPage, OpenSQLitController openSQLitController, string filePath, ToolStripLabel transactionStatus)
+        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath, ToolStripLabel transactionStatus)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);

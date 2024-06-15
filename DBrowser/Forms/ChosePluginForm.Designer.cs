@@ -95,7 +95,7 @@
             Controls.Add(update_button);
             Controls.Add(plugins_list);
             Name = "ChosePluginForm";
-            Text = "ChosePluginForm";
+            Text = "Выбор типа базы данных";
             FormClosing += ChosePluginForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();

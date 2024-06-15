@@ -18,8 +18,7 @@ namespace DBrowser
 {
     public partial class Form1 : Form
     {
-        private OpenSQLitController openDataBaseController;
-        private ServiceProvider serviceProvider;
+        private OpenDbController openDataBaseController;
         private ToolStripLabel transactionStatus = new ToolStripLabel();
         private Form1ViewModel form1ViewModel;
         private IServiceProvider current_plugin;
@@ -30,15 +29,12 @@ namespace DBrowser
             this.current_plugin = form1ViewModel.ChoosePlugin();
 
 
-            /*
-            openDataBaseController = new OpenSQLitController(serviceProvider);
+            
+            openDataBaseController = new OpenDbController(current_plugin);
             var managerTransaction = openDataBaseController.GetTransactionManager();
-
-            */
-            transactionStatus.Text = $"Transaction: ???";
-
             statusStrip1.Items.Add(transactionStatus);
-//            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
+            setTransactionStatus(managerTransaction.IsInTransaction());
+            managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
 
             tabControl1.TabPages.Clear();
             tabControl1.SelectedIndexChanged += SelectedTabForNewPage;
@@ -145,11 +141,11 @@ namespace DBrowser
             transactionStatus.Text = $"Transaction: {status}";
             if (status)
             {
-                транзакцияToolStripMenuItem.Text += " ✓"; 
+                транзакцияToolStripMenuItem.Text = $"Transaction ✓"; 
             }
             else
             {
-                транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+                транзакцияToolStripMenuItem.Text = $"Transaction";
             }
         }
 
