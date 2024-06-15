@@ -26,20 +26,20 @@ namespace DBrowser.Controllers
         private IQueryPlanAnalyzer planAnalyzer;
         private IQueryExecutor queryExecutor;
         private ITransactionExecutor transactionExecutor;
-        private DbName dbName = DbName.SQLite;
+       // private DbName dbName = DbName.SQLite;
         private ITransactionManager transactionManager;
         private DbConnection connection;
         public OpenSQLitController(ServiceProvider serviceProvider)
         {
-            var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
-            var factAnalyzer = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
-            var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
-            var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
-            this.transactionManager = serviceProvider.GetService<ITransactionManager>();
-            connectionService = factConnection!(dbName);
-            planAnalyzer = factAnalyzer!(dbName);
-            queryExecutor = factQueryExecutor!(dbName);
-            transactionExecutor = factTransact!(dbName);
+          //  var factConnection = serviceProvider.GetService<Func<DbName, IConnectionService>>();
+           // var factAnalyzer = serviceProvider.GetService<Func<DbName, IQueryPlanAnalyzer>>();
+           // var factQueryExecutor = serviceProvider.GetService<Func<DbName, IQueryExecutor>>();
+            //var factTransact = serviceProvider.GetService<Func<DbName, ITransactionExecutor>>();
+           // this.transactionManager = serviceProvider.GetService<ITransactionManager>();
+           // connectionService = factConnection!(dbName);
+           // planAnalyzer = factAnalyzer!(dbName);
+           // queryExecutor = factQueryExecutor!(dbName);
+           // transactionExecutor = factTransact!(dbName);
         }
         public void openDataBase(string filename)
         {

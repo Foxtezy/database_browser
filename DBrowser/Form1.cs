@@ -18,7 +18,7 @@ namespace DBrowser
 {
     public partial class Form1 : Form
     {
-        //private OpenSQLitController openDataBaseController;
+        private OpenSQLitController openDataBaseController;
         private ServiceProvider serviceProvider;
         private ToolStripLabel transactionStatus = new ToolStripLabel();
         private Form1ViewModel form1ViewModel;
