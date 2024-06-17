@@ -1,10 +1,10 @@
 ﻿using DBrowser.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Service;
-using Service.ConnectionService;
-using Service.QueryPlan;
-using Service.Transaction;
-using Service.TransactionManager;
+using PluginBase.ConnectionService;
+using PluginBase.QueryPlan;
+using PluginBase.Transaction;
+using PluginBase.TransactionManager;
 using System;
 using System.Data;
 using System.Data.Common;
@@ -12,23 +12,28 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
+using DBrowser.ViewModels;
 
 namespace DBrowser
 {
     public partial class Form1 : Form
     {
-        private OpenSQLitController openDataBaseController;
-        private ServiceProvider serviceProvider;
+        private OpenDbController openDataBaseController;
         private ToolStripLabel transactionStatus = new ToolStripLabel();
-        public Form1(ServiceProvider serviceProvider)
+        private Form1ViewModel form1ViewModel;
+        private IServiceProvider current_plugin;
+        public Form1()
         {
+            this.form1ViewModel = new Form1ViewModel(this);
             InitializeComponent();
-            this.serviceProvider = serviceProvider;
-            openDataBaseController = new OpenSQLitController(serviceProvider);
-            var managerTransaction = openDataBaseController.GetTransactionManager();
+            this.current_plugin = form1ViewModel.ChoosePlugin();
 
-            transactionStatus.Text = $"Transaction: {managerTransaction.IsInTransaction()}";
+
+            
+            openDataBaseController = new OpenDbController(current_plugin);
+            var managerTransaction = openDataBaseController.GetTransactionManager();
             statusStrip1.Items.Add(transactionStatus);
+            setTransactionStatus(managerTransaction.IsInTransaction());
             managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
 
             tabControl1.TabPages.Clear();
@@ -62,7 +67,7 @@ namespace DBrowser
             ToolStripMenuItem aboutItem = new ToolStripMenuItem("О программе");
             aboutItem.Click += aboutItem_Click;
             menuStrip1.Items.Add(aboutItem);
-
+            
         }
         void newQuery_Click(object sender, EventArgs e)
         {
@@ -136,11 +141,11 @@ namespace DBrowser
             transactionStatus.Text = $"Transaction: {status}";
             if (status)
             {
-                транзакцияToolStripMenuItem.Text += " ✓"; 
+                транзакцияToolStripMenuItem.Text = $"Transaction ✓"; 
             }
             else
             {
-                транзакцияToolStripMenuItem.Text.Replace(" ✓", "");
+                транзакцияToolStripMenuItem.Text = $"Transaction";
             }
         }
 
@@ -198,22 +203,12 @@ namespace DBrowser
 
         private void подключениеКБДToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                openDataBaseController.openDataBase(openFileDialog.FileName);
-            }
+
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Файлы SQLite баз данных (*.db *.sqlite *.sqlite3 *.db3)|*.db; *.sqlite; *.sqlite3; *.db3|Все файлы (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                openDataBaseController.openDataBase(openFileDialog.FileName);
-            }
+            openDataBaseController.openDataBase();
         }
 
         private void SelectedTabForNewPage(object sender, EventArgs e)
