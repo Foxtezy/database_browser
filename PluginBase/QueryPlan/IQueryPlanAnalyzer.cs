@@ -5,7 +5,6 @@ namespace PluginBase.QueryPlan
 {
     public interface IQueryPlanAnalyzer
     {
-
-        DataTable Analyze(DbConnection connection, string query);
+        QueryPlanRepresentation Analyze(DbConnection connection, string query);
     }
 }
