@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PluginBase.QueryPlan
+{
+    public class QueryPlanRepresentation
+    {
+        readonly QueryPlanNode Root;
+        readonly string AdditionalInfo;
+
+        public QueryPlanRepresentation(QueryPlanNode root, string additionalInfo)
+        {
+            Root = root;
+            AdditionalInfo = additionalInfo;
+        }
+    }
+}

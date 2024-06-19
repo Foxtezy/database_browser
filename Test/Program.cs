@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PluginBase.ConnectionService;
 using PluginBase.QueryExecutor;
+using PluginBase.QueryPlan;
 using Service;
 using System.Reflection;
 
@@ -16,24 +17,40 @@ PluginLoader p = new();
 
 Dictionary<string, IServiceProvider> plugins = p.getServiceProviders();
 
-IServiceProvider s = plugins["PostgreSQL"];
+IServiceProvider s = plugins["SQLite"];
 IConnectionService? cs = s.GetService<IConnectionService>();
 IQueryExecutor? qe = s.GetService<IQueryExecutor>();
+IQueryPlanAnalyzer? qp = s.GetService<IQueryPlanAnalyzer>();
 
 
 ConnectionCredentials connCred = new();
-//connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
-connCred.Path = "localhost:5432";
-connCred.DatabaseName = "postgres";
-connCred.Username = "postgres";
-connCred.Password = "postgres";
+connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
+//connCred.Path = "localhost:5432";
+//connCred.DatabaseName = "demo";
+//connCred.Username = "airflights";
+//connCred.Password = "airflights";
 using var connection = cs.Connect(connCred);
 
-//string command = "SELECT * FROM artists";
-string command = "SELECT * FROM SHOPS";
+string command = @"
+SELECT artists.Name FROM artists
+WHERE artists.Name NOT IN (SELECT artists.Name FROM albums
+JOIN artists WHERE albums.ArtistId = artists.ArtistId
+GROUP BY artists.ArtistId)";
+/*string command = @"
+SELECT   s2.aircraft_code,
+         string_agg (s2.fare_conditions || '(' || s2.num::text || ')',
+                     ', ') as fare_conditions
+FROM     (
+          SELECT   s.aircraft_code, s.fare_conditions, count(*) as num
+          FROM     seats s
+          GROUP BY s.aircraft_code, s.fare_conditions
+          ORDER BY s.aircraft_code, s.fare_conditions
+         ) s2
+GROUP BY s2.aircraft_code
+ORDER BY s2.aircraft_code";*/
 
-StreamReader sr = qe.Execute(connection, command);
-print(sr);
+QueryPlanRepresentation queryPlan = qp.Analyze(connection, command);
+var x = 1;
 
 static void print(StreamReader sr)
 {
