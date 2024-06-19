@@ -31,7 +31,11 @@ connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
 //connCred.Password = "airflights";
 using var connection = cs.Connect(connCred);
 
-string command = "SELECT * FROM artists";
+string command = @"
+SELECT artists.Name FROM artists
+WHERE artists.Name NOT IN (SELECT artists.Name FROM albums
+JOIN artists WHERE albums.ArtistId = artists.ArtistId
+GROUP BY artists.ArtistId)";
 /*string command = @"
 SELECT   s2.aircraft_code,
          string_agg (s2.fare_conditions || '(' || s2.num::text || ')',
