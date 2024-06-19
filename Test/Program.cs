@@ -17,22 +17,22 @@ PluginLoader p = new();
 
 Dictionary<string, IServiceProvider> plugins = p.getServiceProviders();
 
-IServiceProvider s = plugins["PostgreSQL"];
+IServiceProvider s = plugins["SQLite"];
 IConnectionService? cs = s.GetService<IConnectionService>();
 IQueryExecutor? qe = s.GetService<IQueryExecutor>();
 IQueryPlanAnalyzer? qp = s.GetService<IQueryPlanAnalyzer>();
 
 
 ConnectionCredentials connCred = new();
-//connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
-connCred.Path = "localhost:5432";
-connCred.DatabaseName = "demo";
-connCred.Username = "airflights";
-connCred.Password = "airflights";
+connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
+//connCred.Path = "localhost:5432";
+//connCred.DatabaseName = "demo";
+//connCred.Username = "airflights";
+//connCred.Password = "airflights";
 using var connection = cs.Connect(connCred);
 
-//string command = "SELECT * FROM artists";
-string command = @"
+string command = "SELECT * FROM artists";
+/*string command = @"
 SELECT   s2.aircraft_code,
          string_agg (s2.fare_conditions || '(' || s2.num::text || ')',
                      ', ') as fare_conditions
@@ -43,7 +43,7 @@ FROM     (
           ORDER BY s.aircraft_code, s.fare_conditions
          ) s2
 GROUP BY s2.aircraft_code
-ORDER BY s2.aircraft_code";
+ORDER BY s2.aircraft_code";*/
 
 QueryPlanRepresentation queryPlan = qp.Analyze(connection, command);
 var x = 1;
