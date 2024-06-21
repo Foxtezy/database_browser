@@ -13,6 +13,7 @@ using System.Diagnostics.Metrics;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 using DBrowser.ViewModels;
+using DBrowser.Forms;
 
 namespace DBrowser
 {
@@ -26,6 +27,7 @@ namespace DBrowser
         {
             this.form1ViewModel = new Form1ViewModel(this);
             InitializeComponent();
+            
             this.current_plugin = form1ViewModel.ChoosePlugin();
 
 
@@ -73,7 +75,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -84,7 +86,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", this.transactionStatus);
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();

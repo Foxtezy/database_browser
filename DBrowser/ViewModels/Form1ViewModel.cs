@@ -35,12 +35,14 @@ namespace DBrowser.ViewModels
 
         public IServiceProvider ChoosePlugin()
         {
+            
+            var choose_window = new ChosePluginForm(this);
+            choose_window.ShowDialog();
+
             PluginLoader p = new();
 
             Dictionary<string, IServiceProvider> plugins = p.getServiceProviders();
-
-            var choose_window = new ChosePluginForm(this);
-            choose_window.ShowDialog();
+            
 
             if (lastPluginName != null)
             {

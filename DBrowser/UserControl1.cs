@@ -31,20 +31,18 @@ namespace DBrowser
         private TabPage tabPage;
         private string filePath;
         private ToolStripLabel responseTime;
-        private ToolStripLabel hasTransaction;
         private string baseResponseTimeText = "Время получения ответа: ";
-        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath, ToolStripLabel transactionStatus)
+        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);
-            this.showResultController = new ShowResultController(showResultTextBox);
+            this.showResultController = new ShowResultController(splitContainer1.Panel2);
             this.fileController = new FileController();
             this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
             this.responseTime = new ToolStripLabel();
             responseTime.Text = baseResponseTimeText;
-
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
@@ -60,13 +58,13 @@ namespace DBrowser
                 {
                     Stopwatch stopwatch = Stopwatch.StartNew();
                     responseTime.Text = baseResponseTimeText;
-                    DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
-                    showResultController.Show(dataTableResult);
+                    QueryPlanRepresentation planRepresentation = qp.Analyze(connection, queryEditorController.getQueryContent());
+                    showResultController.Show(planRepresentation);
                     stopwatch.Stop();
                     long time = stopwatch.ElapsedMilliseconds;
                     responseTime.Text += time.ToString() + "ms";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -104,11 +102,11 @@ namespace DBrowser
                     long time = stopwatch.ElapsedMilliseconds;
                     responseTime.Text += time.ToString() + "ms";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
+
             }
             else
             {
@@ -191,6 +189,16 @@ namespace DBrowser
         }
 
         private void statusStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void showResultTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }

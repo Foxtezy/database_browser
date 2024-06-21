@@ -23,6 +23,7 @@ namespace DBrowser
             ApplicationConfiguration.Initialize();
 
             Application.Run(new Form1());
+            
         }
         /*
         static ServiceProvider buildServiceProvider()
