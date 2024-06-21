@@ -100,7 +100,7 @@ namespace DBrowser.Controllers
             }
             showResultPanel.Controls.Clear();
             showResultPanel.Controls.Add(dataGreed);
-            return $"Columns: {rows.Length}";
+            return $"Raws: {rows.Length-2}";
         }
     }
 }
