@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace DBrowser
 {
@@ -30,9 +31,9 @@ namespace DBrowser
         private OpenDbController openSQLitController;
         private TabPage tabPage;
         private string filePath;
-        private ToolStripLabel responseTime;
-        private string baseResponseTimeText = "Время получения ответа: ";
-        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath)
+        private ToolStripLabel additionalInfo;
+        private string baseResponseTimeText = "Время получения ответа";
+        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath, ToolStripLabel additionalInfo)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);
@@ -41,8 +42,8 @@ namespace DBrowser
             this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
-            this.responseTime = new ToolStripLabel();
-            responseTime.Text = baseResponseTimeText;
+            this.additionalInfo = additionalInfo;
+            additionalInfo.Text = baseResponseTimeText;
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
@@ -57,12 +58,13 @@ namespace DBrowser
                 try
                 {
                     Stopwatch stopwatch = Stopwatch.StartNew();
-                    responseTime.Text = baseResponseTimeText;
+                    additionalInfo.Text = baseResponseTimeText;
                     QueryPlanRepresentation planRepresentation = qp.Analyze(connection, queryEditorController.getQueryContent());
-                    showResultController.Show(planRepresentation);
                     stopwatch.Stop();
+                    string add_info = showResultController.Show(planRepresentation);
+                    add_info = Regex.Replace(add_info, @"\s", " ");
                     long time = stopwatch.ElapsedMilliseconds;
-                    responseTime.Text += time.ToString() + "ms";
+                    additionalInfo.Text = $"{baseResponseTimeText}: {time}ms | {add_info}";
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +82,7 @@ namespace DBrowser
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)
         {
             queryEditorController.removeQueryText();
-            responseTime.Text = baseResponseTimeText;
+            additionalInfo.Text = baseResponseTimeText;
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -95,12 +97,13 @@ namespace DBrowser
                 try
                 {
                     Stopwatch stopwatch = Stopwatch.StartNew();
-                    responseTime.Text = baseResponseTimeText;
+                    additionalInfo.Text = baseResponseTimeText;
                     StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
-                    showResultController.Show(sr);
+                    string add_info = showResultController.Show(sr);
+                    add_info = Regex.Replace(add_info, @"\s", " ");
                     stopwatch.Stop();
                     long time = stopwatch.ElapsedMilliseconds;
-                    responseTime.Text += time.ToString() + "ms";
+                    additionalInfo.Text = $"{baseResponseTimeText}: {time}ms | {add_info}";
                 }
                 catch (Exception ex)
                 {

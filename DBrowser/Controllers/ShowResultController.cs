@@ -1,4 +1,5 @@
 ﻿using DBrowser.Models;
+using Microsoft.VisualBasic;
 using PluginBase.QueryPlan;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace DBrowser.Controllers
             return parent;
         }
 
-        public void Show(QueryPlanRepresentation queryPlanRepresentation)
+        public string Show(QueryPlanRepresentation queryPlanRepresentation)
         {
             this.responseText = null;
             string additionalInfo = queryPlanRepresentation.AdditionalInfo;
@@ -48,6 +49,7 @@ namespace DBrowser.Controllers
             treeView.Nodes.Add(rootNode);
             showResultPanel.Controls.Clear();
             showResultPanel.Controls.Add(treeView);
+            return additionalInfo;
 
         }
         public String getResultContent()
@@ -59,9 +61,8 @@ namespace DBrowser.Controllers
             }
             return this.responseText;
         }
-        public void Show(StreamReader streamReader)
+        public string Show(StreamReader streamReader)
         {
-        
             String result = streamReader.ReadToEnd();
             streamReader.Close();
             this.responseText = result;
@@ -85,11 +86,21 @@ namespace DBrowser.Controllers
 
             for(int i = 1; i < rows.Length; i++)
             {
-                dataGreed.Rows.Add(rows[i].Split(":"));
+                string[] row = rows[i].Split(":");
+/*                for(int j = 0; i < row.Length; i++)
+                {
+                    if (row[j].GetType().IsArray)
+                    {
+                        string newString = String.Join(", ", row[j]);
+                        row[j] = newString;
+                    }
+                }
+*/
+                dataGreed.Rows.Add(row);
             }
             showResultPanel.Controls.Clear();
             showResultPanel.Controls.Add(dataGreed);
-
+            return $"Columns: {rows.Length}";
         }
     }
 }

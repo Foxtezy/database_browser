@@ -20,21 +20,21 @@ namespace DBrowser
     public partial class Form1 : Form
     {
         private OpenDbController openDataBaseController;
-        private ToolStripLabel transactionStatus = new ToolStripLabel();
+        private ToolStripLabel bottomLabel = new ToolStripLabel();
         private Form1ViewModel form1ViewModel;
         private IServiceProvider current_plugin;
         public Form1()
         {
             this.form1ViewModel = new Form1ViewModel(this);
             InitializeComponent();
-            
+
             this.current_plugin = form1ViewModel.ChoosePlugin();
 
 
-            
+
             openDataBaseController = new OpenDbController(current_plugin);
             var managerTransaction = openDataBaseController.GetTransactionManager();
-            statusStrip1.Items.Add(transactionStatus);
+            statusStrip1.Items.Add(bottomLabel);
             setTransactionStatus(managerTransaction.IsInTransaction());
             managerTransaction.AddEventHandler((sen, arg) => setTransactionStatus(managerTransaction.IsInTransaction()));
 
@@ -69,13 +69,14 @@ namespace DBrowser
             ToolStripMenuItem aboutItem = new ToolStripMenuItem("О программе");
             aboutItem.Click += aboutItem_Click;
             menuStrip1.Items.Add(aboutItem);
-            
+
+
         }
         void newQuery_Click(object sender, EventArgs e)
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", bottomLabel);
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -86,7 +87,7 @@ namespace DBrowser
         {
             TabPage newQuery = new TabPage();
             newQuery.Text = "Новый запрос";
-            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "");
+            UserControl1 frm = new UserControl1(newQuery, this.openDataBaseController, "", bottomLabel);
             newQuery.Controls.Add(frm);
             frm.Dock = DockStyle.Fill;
             frm.Show();
@@ -140,10 +141,10 @@ namespace DBrowser
         }
         private void setTransactionStatus(bool status)
         {
-            transactionStatus.Text = $"Transaction: {status}";
+            // bottomLabel.Text = $"Transaction: {status}" + bottomLabel.Text;
             if (status)
             {
-                транзакцияToolStripMenuItem.Text = $"Transaction ✓"; 
+                транзакцияToolStripMenuItem.Text = $"Transaction ✓";
             }
             else
             {
