@@ -57,8 +57,10 @@
             tabPage1 = new TabPage();
             tabControl1 = new TabControl();
             statusStrip1 = new StatusStrip();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // BottomToolStripPanel
@@ -241,7 +243,7 @@
             tabPage2.Margin = new Padding(4, 3, 4, 3);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(4, 3, 4, 3);
-            tabPage2.Size = new Size(1176, 358);
+            tabPage2.Size = new Size(1176, 371);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
@@ -271,12 +273,18 @@
             // 
             // statusStrip1
             // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1 });
             statusStrip1.Location = new Point(0, 416);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1184, 22);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             statusStrip1.ItemClicked += statusStrip1_ItemClicked;
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(0, 17);
             // 
             // Form1
             // 
@@ -294,6 +302,8 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tabControl1.ResumeLayout(false);
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -327,5 +337,6 @@
         private ToolStripMenuItem завершитьToolStripMenuItem;
         private ToolStripMenuItem отменитьИзмененияToolStripMenuItem;
         private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
     }
 }

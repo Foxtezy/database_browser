@@ -36,11 +36,9 @@
             сохранитьОтветToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             queryEditorTextBox = new TextBox();
-            showResultTextBox = new TextBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
@@ -108,7 +106,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(showResultTextBox);
+            splitContainer1.Panel2.Paint += splitContainer1_Panel2_Paint;
             splitContainer1.Size = new Size(810, 570);
             splitContainer1.SplitterDistance = 281;
             splitContainer1.TabIndex = 1;
@@ -126,16 +124,6 @@
             queryEditorTextBox.TabIndex = 1;
             queryEditorTextBox.TextChanged += queryTextBox_TextChanged;
             // 
-            // showResultTextBox
-            // 
-            showResultTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            showResultTextBox.Location = new Point(0, 0);
-            showResultTextBox.Multiline = true;
-            showResultTextBox.Name = "showResultTextBox";
-            showResultTextBox.ReadOnly = true;
-            showResultTextBox.Size = new Size(810, 282);
-            showResultTextBox.TabIndex = 0;
-            // 
             // UserControl1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -148,8 +136,6 @@
             menuStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
-            splitContainer1.Panel2.ResumeLayout(false);
-            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
@@ -162,7 +148,6 @@
         private ToolStripMenuItem отправитьToolStripMenuItem;
         private ToolStripMenuItem queryPlanToolStripMenuItem;
         private SplitContainer splitContainer1;
-        private TextBox showResultTextBox;
         private TextBox queryEditorTextBox;
         private ToolStripMenuItem сохранитьToolStripMenuItem;
         private ToolStripMenuItem очиститьToolStripMenuItem;

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace DBrowser
 {
@@ -30,21 +31,19 @@ namespace DBrowser
         private OpenDbController openSQLitController;
         private TabPage tabPage;
         private string filePath;
-        private ToolStripLabel responseTime;
-        private ToolStripLabel hasTransaction;
-        private string baseResponseTimeText = "Время получения ответа: ";
-        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath, ToolStripLabel transactionStatus)
+        private ToolStripLabel additionalInfo;
+        private string baseResponseTimeText = "Время получения ответа";
+        public UserControl1(TabPage tabPage, OpenDbController openSQLitController, string filePath, ToolStripLabel additionalInfo)
         {
             InitializeComponent();
             this.queryEditorController = new QueryEditorController(queryEditorTextBox);
-            this.showResultController = new ShowResultController(showResultTextBox);
+            this.showResultController = new ShowResultController(splitContainer1.Panel2);
             this.fileController = new FileController();
             this.openSQLitController = openSQLitController;
             this.tabPage = tabPage;
             this.filePath = filePath;
-            this.responseTime = new ToolStripLabel();
-            responseTime.Text = baseResponseTimeText;
-
+            this.additionalInfo = additionalInfo;
+            additionalInfo.Text = baseResponseTimeText;
         }
         private void queryPlanToolStripMenuItem_Click(Object sender, EventArgs e)
         {
@@ -59,14 +58,15 @@ namespace DBrowser
                 try
                 {
                     Stopwatch stopwatch = Stopwatch.StartNew();
-                    responseTime.Text = baseResponseTimeText;
-                    DataTable dataTableResult = qp.Analyze(connection, queryEditorController.getQueryContent());
-                    showResultController.Show(dataTableResult);
+                    additionalInfo.Text = baseResponseTimeText;
+                    QueryPlanRepresentation planRepresentation = qp.Analyze(connection, queryEditorController.getQueryContent());
                     stopwatch.Stop();
+                    string add_info = showResultController.Show(planRepresentation);
+                    add_info = Regex.Replace(add_info, @"\s", " ");
                     long time = stopwatch.ElapsedMilliseconds;
-                    responseTime.Text += time.ToString() + "ms";
+                    additionalInfo.Text = $"{baseResponseTimeText}: {time}ms | {add_info}";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -82,7 +82,7 @@ namespace DBrowser
         private void очиститьToolStripMenuItem_Click(Object sender, EventArgs e)
         {
             queryEditorController.removeQueryText();
-            responseTime.Text = baseResponseTimeText;
+            additionalInfo.Text = baseResponseTimeText;
         }
         private void отправитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -97,18 +97,19 @@ namespace DBrowser
                 try
                 {
                     Stopwatch stopwatch = Stopwatch.StartNew();
-                    responseTime.Text = baseResponseTimeText;
+                    additionalInfo.Text = baseResponseTimeText;
                     StreamReader sr = qe.Execute(connection, queryEditorController.getQueryContent());
-                    showResultController.Show(sr);
+                    string add_info = showResultController.Show(sr);
+                    add_info = Regex.Replace(add_info, @"\s", " ");
                     stopwatch.Stop();
                     long time = stopwatch.ElapsedMilliseconds;
-                    responseTime.Text += time.ToString() + "ms";
+                    additionalInfo.Text = $"{baseResponseTimeText}: {time}ms | {add_info}";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show($"Error: {ex.Message}", "Error occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
+
             }
             else
             {
@@ -191,6 +192,16 @@ namespace DBrowser
         }
 
         private void statusStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void showResultTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }

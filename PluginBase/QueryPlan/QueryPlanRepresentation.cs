@@ -8,8 +8,8 @@ namespace PluginBase.QueryPlan
 {
     public class QueryPlanRepresentation
     {
-        readonly QueryPlanNode Root;
-        readonly string AdditionalInfo;
+        public QueryPlanNode Root;
+        public string AdditionalInfo;
 
         public QueryPlanRepresentation(QueryPlanNode root, string additionalInfo)
         {
