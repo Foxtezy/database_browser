@@ -57,9 +57,11 @@ namespace PSQLPlugin.Transaction
                 connection.Open();
             }
             DbCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT transaction_timestamp() != statement_timestamp()";
+            command.CommandText = "SELECT statement_timestamp() - now() > interval '1 millisecond';";
             DbDataReader ans = command.ExecuteReader();
-            return ans.GetBoolean(0);
+            DataTable dt = new DataTable();
+            dt.Load(ans);
+            return (bool)dt.Rows[0].ItemArray[0];
         }
     }
 }

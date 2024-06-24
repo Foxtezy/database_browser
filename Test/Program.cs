@@ -17,28 +17,28 @@ PluginLoader p = new();
 
 Dictionary<string, IServiceProvider> plugins = p.getServiceProviders();
 
-IServiceProvider s = plugins["SQLite"];
+IServiceProvider s = plugins["PostgreSQL"];
 IConnectionService? cs = s.GetService<IConnectionService>();
 IQueryExecutor? qe = s.GetService<IQueryExecutor>();
 IQueryPlanAnalyzer? qp = s.GetService<IQueryPlanAnalyzer>();
 
 
 ConnectionCredentials connCred = new();
-connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
-//connCred.Path = "localhost:5432";
-//connCred.DatabaseName = "demo";
-//connCred.Username = "airflights";
-//connCred.Password = "airflights";
+//connCred.Path = "C:\\Users\\nmaho\\Downloads\\chinook\\chinook.db";
+connCred.Path = "localhost:5432";
+connCred.DatabaseName = "demo";
+connCred.Username = "aboba";
+connCred.Password = "aboba";
 using var connection = cs.Connect(connCred);
 
-string command = @"
+/*string command = @"
 SELECT artists.Name FROM artists
 WHERE artists.Name NOT IN (SELECT artists.Name FROM albums
 JOIN artists WHERE albums.ArtistId = artists.ArtistId
-GROUP BY artists.ArtistId)";
-/*string command = @"
+GROUP BY artists.ArtistId)";*/
+string command = @"
 SELECT   s2.aircraft_code,
-         string_agg (s2.fare_conditions || '(' || s2.num::text || ')',
+         string_agg (s2.fare_conditions || '( BEGIN ' || s2.num::text || ')',
                      ', ') as fare_conditions
 FROM     (
           SELECT   s.aircraft_code, s.fare_conditions, count(*) as num
@@ -47,9 +47,12 @@ FROM     (
           ORDER BY s.aircraft_code, s.fare_conditions
          ) s2
 GROUP BY s2.aircraft_code
-ORDER BY s2.aircraft_code";*/
+ORDER BY s2.aircraft_code";
 
-QueryPlanRepresentation queryPlan = qp.Analyze(connection, command);
+//string command = "BEGIN";
+
+var queryPlan = qe.Execute(connection, command);
+print(queryPlan);
 var x = 1;
 
 static void print(StreamReader sr)

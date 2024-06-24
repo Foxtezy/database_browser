@@ -30,7 +30,7 @@ namespace SqlitePlugin.QueryParser
             string[] words = query.Split(new[] { ' ', ';', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < words.Length; i++)
             {
-                if (words[i] == "BEGIN" || words[i] == "COMMIT" || words[i] == "ROLLBACK")
+                if (words[i].ToUpper() == "BEGIN" || words[i].ToUpper() == "COMMIT" || words[i].ToUpper() == "ROLLBACK")
                 {
                     transactionManager.InTransaction(transactionExecutor.TransactionStatus(connection));
                     return;
