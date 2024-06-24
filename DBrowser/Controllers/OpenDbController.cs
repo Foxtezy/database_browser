@@ -45,7 +45,13 @@ namespace DBrowser.Controllers
         public void openDataBase()
         {
             ConnectionCredentials cred = getFilledCredentials(connectionService.GetNecessaryFields());
-            this.connection = connectionService.Connect(cred);
+            try
+            {
+                this.connection = connectionService.Connect(cred);
+            }catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public ConnectionCredentials getFilledCredentials(List<string> necessaryFields)
