@@ -30,7 +30,7 @@ namespace DBrowser.Forms
             InitializeTextBoxes();
             InitializeButtons();
             int formHeight = 30 + fieldsList.Count * 30 + 100;
-            this.Size = new System.Drawing.Size(380, formHeight);
+            this.Size = new System.Drawing.Size(480, formHeight);
         }
 
         private void InitializeTextBoxes()
@@ -55,6 +55,23 @@ namespace DBrowser.Forms
                 textBox.TextChanged += new EventHandler(TextBox_TextChanged); // Добавление обработчика события
                 this.Controls.Add(textBox);
 
+                if (label.Text.Equals("Path"))
+                {
+                    Button browseButton = new Button();
+                    browseButton.Text = "Browse";
+                    browseButton.Location = new System.Drawing.Point(340, startY + i * spacing);
+                    browseButton.Size = new System.Drawing.Size(75, 23);
+                    browseButton.Click += new EventHandler((sender, e) =>
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            textBox.Text = openFileDialog.FileName;
+                        }
+                    });
+                    this.Controls.Add(browseButton);
+                }
+
                 
                 labelTextBoxPairs.Add(new Tuple<Label, TextBox>(label, textBox));
             }
@@ -68,7 +85,6 @@ namespace DBrowser.Forms
                 var pair = labelTextBoxPairs.Find(p => p.Item2 == textBox);
                 if (pair != null)
                 {
-                    Console.WriteLine($"Text changed in TextBox with Label '{pair.Item1.Text}': {textBox.Text}");
                     string fieldName = pair.Item1.Text;
                     string newValue = textBox.Text;
 
@@ -109,11 +125,6 @@ namespace DBrowser.Forms
                 inputData.Add(pair.Item2.Text);
             }
 
-            
-            foreach (var data in inputData)
-            {
-                Console.WriteLine(data);
-            }
 
             this.DialogResult = DialogResult.OK;
             this.Close();
